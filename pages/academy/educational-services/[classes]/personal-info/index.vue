@@ -4,10 +4,39 @@
       <pageBaseLayout
         title="اطلاعات شخصی"
         formClass="personal-info"
-        :firstIndex="true"
         @baseRouteBackHandler="routBackHandler"
         @baseSubmit="submit"
       >
+        <v-dialog transition="dialog-bottom-transition" width="auto">
+          <template v-slot:activator="{ props }">
+            <v-btn color="primary" v-bind="props">From the bottom</v-btn>
+          </template>
+          <template v-slot:default="{ isActive }">
+            <v-card class="rounded-xl">
+              <v-toolbar color="teal-accent-4"
+                ><p class="text-center text-title font-weight-bold pa-5">
+                  نحوه پرداخت خود را انتخاب کنید
+                </p></v-toolbar
+              >
+              <v-card-text>
+                <v-row>
+                  <v-col cols="6" 
+                    ><v-img :width= 100  :height=120 class="mx-auto" :src="installmentPurchase"></v-img
+                  >
+                <p class="text font-weight-bold text-center">پرداخت نقدی<br>(آنلاین)</p>
+                </v-col>
+                  <v-divider vertical></v-divider>
+                  <v-col  cols="6" 
+                    ><v-img :width="160" :height="120"  :src="cashPurchase"></v-img
+                  > <p class="text font-weight-bold text-center">پرداخت اقساطی<br>(آنلاین)</p></v-col>
+                </v-row>
+              </v-card-text>
+              <v-card-actions class="justify-center">
+                <v-btn variant="text" @click="isActive.value = false">بستن</v-btn>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-dialog>
         <v-row>
           <v-col cols="12" v-for="(i, index) in inputFields" :key="i" style="padding: 0px">
             <v-text-field
@@ -128,8 +157,10 @@
   </div>
 </template>
 <script>
-import formInputs from "./formInput.ts";
-import cityJson from "./city.json";
+import installmentPurchase from "~/assets/img/pics/installment-purchase.png";
+import cashPurchase from "~/assets/img/pics/cash-purchase.png";
+import formInputs from "~/components/employmentForms/personalInfo/formInput";
+import cityJson from "~/components/employmentForms/personalInfo/city.json";
 import pageBaseLayout from "~/components/pageBaseLayout.vue";
 import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 export default {
@@ -139,7 +170,6 @@ export default {
     const inputFields = ref(formInputs);
     const cities = ref(cityJson);
     const date = ref("");
-
     const states = ref(Object.keys(cities.value));
     const getCitiesByStates = (states) => {
       return states ? cities.value[states] : [];
@@ -150,7 +180,6 @@ export default {
     watch(selectedState, (newState) => {
       // When the selected region changes, update the items of the second autocomplete
       selectedCity.value = null;
-
       // Reset the selected city
     });
     const userIdentify = ref({
@@ -170,7 +199,6 @@ export default {
       phoneNo: "",
       homeNo: "",
     });
-
     const rules = ref({
       text: [
         (value) => {
@@ -204,7 +232,7 @@ export default {
       }
     };
     const routBackHandler = () => {
-      router.push("/home");
+      router.back();
     };
     onMounted(() => {
       selection.value = 4;
@@ -221,7 +249,14 @@ export default {
       selectedCity,
       date,
       routBackHandler,
+      installmentPurchase,
+      cashPurchase,
     };
   },
 };
 </script>
+<style>
+.v-toolbar__content {
+  justify-content: center !important;
+}
+</style>

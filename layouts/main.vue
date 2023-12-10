@@ -4,10 +4,17 @@
       <v-card>
         <v-layout>
           <v-app-bar color="white" elevation="1">
-            <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <img :src="logo" :width="170" class="mr-3" alt="Asiasalamat logo" />
             <v-spacer></v-spacer>
-
-            <img :src="logo" :width="170" class="mr-3" alt="Asiasalamat logo"/>
+            <div>
+              <NuxtLink to="/messages"
+                ><v-btn variant="text" class="ml-2" icon="mdi-email-outline" size="xl"></v-btn
+              ></NuxtLink>
+              <v-app-bar-nav-icon
+                variant="text"
+                @click.stop="drawer = !drawer"
+              ></v-app-bar-nav-icon>
+            </div>
           </v-app-bar>
 
           <v-navigation-drawer v-model="drawer" location="right" :width="230" temporary>
@@ -29,13 +36,6 @@
               </v-list-item>
               <v-divider></v-divider>
               <v-list-item>
-                ورود با اثر انگشت
-                <v-icon icon="mdi-fingerprint" class="ml-3"></v-icon>
-                <v-switch style="position: absolute; bottom: -25px"> </v-switch>
-              </v-list-item>
-              <v-divider></v-divider>
-
-              <v-list-item>
                 خروج
                 <v-icon icon="mdi-exit-to-app" class="ml-3"></v-icon>
               </v-list-item>
@@ -47,9 +47,8 @@
             </template>
           </v-navigation-drawer>
 
-          <v-main style="min-height: 100vh!important; display: flex; flex-direction: column">
+          <v-main style="min-height: 100vh !important; display: flex; flex-direction: column">
             <slot />
-
             <TheNavigation />
           </v-main>
         </v-layout>
@@ -58,15 +57,15 @@
   </div>
 </template>
 <script>
-import TheNavigation from "~/components/TheNavigation.vue";
-import logo from "~/assets/img/icons/main-logo.png"
+import TheNavigation from "~/components/navigation/TheNavigation.vue";
+import logo from "~/assets/img/icons/main-logo.png";
 export default {
   components: { TheNavigation },
   setup() {
     const drawer = ref(false);
     return {
       drawer,
-      logo
+      logo,
     };
   },
 };

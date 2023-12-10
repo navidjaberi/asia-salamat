@@ -16,7 +16,11 @@ export default defineNuxtConfig({
   typescript: { shim: false },
   build: { transpile: ["vuetify"] },
   ssr:false,
- 
+ runtimeConfig:{
+  public: {
+    baseURL: process.env.BASE_URL || 'http://asiasalamat.ir',
+  },
+ },
   modules: [
     "@kevinmarrec/nuxt-pwa",
     '@vee-validate/nuxt',
@@ -26,6 +30,7 @@ export default defineNuxtConfig({
         config.plugins.push(vuetify());
       });
     },
+    '@pinia/nuxt',
   ],
 
   app: {

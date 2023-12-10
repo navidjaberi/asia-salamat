@@ -2,7 +2,7 @@
   <form class="text-right login" style="font-size: 0.9rem" @submit.prevent="phoneSubmit">
     <v-container class="mt-5">
       <div><p>شماره تلفن همراه خود را وارد کنید</p></div>
-      <div class="mt-4">
+      <div class="mt-5">
         <v-text-field
           variant="underlined"
           prepend-inner-icon="mdi-cellphone"
@@ -55,7 +55,6 @@ export default {
     ]);
 
     const phoneSubmit = () => {
-      console.log(phone.value.value);
       router.push("./confirm");
     }
     return { phoneSubmit,rules ,phoneNum};
@@ -78,11 +77,11 @@ export default {
     max-width: 100vw;
     left: 50%;
     transform: translate(-50%, -50%);
-    padding: 0px 10px !important;
   }
   .v-messages__message{
     margin-top: 0.5rem;
-    hyphens:none!important
+    hyphens:none!important;
+    line-height:14px!important;
   }
 }
 </style>

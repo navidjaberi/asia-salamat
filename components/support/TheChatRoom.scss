@@ -1,0 +1,62 @@
+.chat-box {
+  .v-dialog--fullscreen {
+    display: flex;
+    justify-content: center;
+  }
+  .v-overlay__content {
+    position: unset !important;
+  }
+  .v-navigation-drawer__content {
+    display: inline-flex;
+    flex-direction: column-reverse;
+    position: relative;
+  }
+  .msg-width{
+    max-width: 80%!important;
+  }
+  .v-input__control {
+    width: 100%;
+  }
+  .v-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .v-field__input {
+    font-size: 0.8rem !important;
+  }
+  .type-box {
+    position: fixed;
+    bottom: 0px;
+    width: 100vw;
+    padding: 0px 7px;
+    background-color: #ffffff;
+    left: 50%;
+    transform: translate(-50%, 0%);
+  }
+  .img-details {
+    position: absolute;
+    bottom: -13px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .img-preview {
+    position: absolute;
+    bottom: 77px;
+    border-radius: 10px 10px 0px 0px;
+    width: 97%;
+    left: 50%;
+
+    transform: translate(-50%, 50%);
+  }
+
+  .image-input {
+    .v-field__input,
+    .v-input__control {
+      display: none;
+    }
+    .v-input__prepend {
+      margin-inline-end: 0px;
+    }
+  }
+}

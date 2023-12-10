@@ -1,0 +1,48 @@
+.upload-image {
+  .v-input {
+    width: 190px !important;
+    height: 190px !important;
+    margin: 0 auto;
+    margin-top: 1rem;
+  }
+  .v-label {
+    font-size: 0.8rem;
+  }
+  .v-field--appended {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .v-field__prepend-inner {
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem !important;
+  }
+  .v-field__field {
+    display: flex;
+    justify-content: center;
+  }
+  .v-input__prepend {
+    display: none;
+  }
+  .v-field__input {
+    font-size: 0.7rem;
+    margin-top: 0.5rem;
+    color: #00bfa5;
+    text-align: center;
+  }
+  .v-field__clearable {
+    padding-bottom: 0.5rem;
+  }
+  .v-input__details {
+    padding: 0px !important;
+    text-align: center;
+    display: flex;
+    align-items: center;
+  }
+  .btn-row {
+    position: absolute;
+    bottom: 1rem;
+    width: 100%;
+  }
+}

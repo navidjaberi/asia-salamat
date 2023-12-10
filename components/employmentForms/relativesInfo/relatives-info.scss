@@ -1,0 +1,38 @@
+.relatives {
+    .checkbox {
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 10px;
+    }
+    .v-field-label,
+    .v-label,
+    .v-field-label--floating,
+    .v-field-label {
+      font-weight: bold !important;
+      right: 10px !important;
+      font-size: 0.8rem !important;
+    }
+    input {
+      text-align: right !important;
+    }
+    .v-field-label--floating {
+      right: 10px !important;
+      font-size: 0.6rem !important;
+    }
+  
+    .v-field__input {
+      text-align: right !important;
+      display: flex;
+      justify-content: flex-end;
+      font-size: 0.8rem;
+    }
+  
+    .v-counter {
+      display: none;
+    }
+  }
+  .error {
+    color: red;
+    margin: 5px auto;
+    font-size: 0.7rem;
+  }

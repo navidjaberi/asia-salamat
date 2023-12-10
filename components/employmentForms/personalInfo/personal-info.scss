@@ -1,0 +1,69 @@
+.vpd-icon-btn,
+.pdp-group {
+  display: none !important;
+}
+.vpd-input-group {
+  width: 100%;
+}
+.personal-info {
+  .form-control {
+    border: none;
+    border-bottom: 1px solid rgb(133, 133, 133);
+    color: rgb(95, 95, 95);
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+  .date-picker {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 18px;
+    padding-top: 10px;
+    padding-left: 0px;
+  }
+  .date-picker--div {
+    width: 100%;
+    max-width: 100%;
+    margin-right: 8px;
+  }
+  .v-field-label,
+  .v-label,
+  .v-field-label--floating,
+  .v-field-label {
+    font-weight: bold !important;
+    right: 10px !important;
+    font-size: 0.8rem !important;
+  }
+  input {
+    text-align: right !important;
+  }
+  .v-field-label--floating {
+    right: 10px !important;
+    font-size: 0.6rem !important;
+  }
+  .v-chip {
+    border-radius: 5px !important;
+    font-size: 0.6rem !important;
+    text-align: center !important;
+    height: 40px !important;
+    padding: 0px 8px !important;
+  }
+
+  .v-auto-complete--menu-active {
+    text-align: right !important;
+  }
+  .v-field__input {
+    text-align: right !important;
+    display: flex;
+    font-size: 0.8rem;
+  }
+
+  .v-counter {
+    display: none;
+  }
+  .btn-row {
+    position: absolute;
+    bottom: 1rem;
+    width: 100%;
+  }
+}

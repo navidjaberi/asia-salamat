@@ -68,6 +68,14 @@ const formInput =[
       value: "",
       type: "number",
     },
+ 
+    {
+      title: "شماره تلفن ضروری",
+      icon: "mdi-cellphone",
+      required: true,
+      value: "",
+      type: "number",
+    },
     {
       title: "شماره تلفن منزل",
       icon: "mdi-phone",

@@ -1,0 +1,24 @@
+.collaboration {
+  .v-selection-control {
+    display: flex;
+    justify-content: center;
+  }
+  .v-label {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 0.8rem !important;
+  }
+  .v-selection-control-group {
+    justify-content: space-around;
+  }
+  .btn-row {
+    position: absolute;
+    bottom: 1rem;
+    width: 100%;
+  }
+}
+.error {
+  color: red;
+  margin: 5px auto;
+  font-size: 0.8rem;
+}
