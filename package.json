@@ -16,6 +16,7 @@
     "@kevinmarrec/nuxt-pwa": "^0.17.0",
     "@nuxt/devtools": "^0.8.5",
     "@nuxtjs/google-fonts": "^3.0.2",
+    "@sidebase/nuxt-pdf": "^0.1.2",
     "nuxt": "3.7.4",
     "sass": "^1.68.0",
     "vuetify": "^3.3.19"
@@ -23,9 +24,15 @@
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
     "@vee-validate/nuxt": "^4.11.8",
+    "heic-convert": "^2.1.0",
+    "heic2any": "^0.0.4",
+    "image-conversion": "^2.1.1",
+    "jspdf": "^2.5.1",
+    "nuxt-html2canvas-proxy": "^1.0.1",
     "pinia": "^2.1.7",
     "vee-validate": "^4.11.8",
     "vite-plugin-vuetify": "^1.0.2",
+    "vue-html2pdf": "^1.8.0",
     "vue3-persian-datetime-picker": "^1.2.2"
   }
 }

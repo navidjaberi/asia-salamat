@@ -1,150 +1,277 @@
 <template>
-  <v-container fluid class="chat-box pa-2">
-    <v-container>
-      <v-row>
-        <v-col class="mb-13 pa-0">
-          <div
-            v-for="(item, index) in chat"
-            :key="index"
-            :class="[
-              'd-flex flex-row  my-3 align-center',
-              item.from == 'user' ? 'justify-end' : null,
-            ]"
-          >
+  <v-container fluid class="chat-box pa-2 mx-auto">
+    <v-row>
+      <v-col lg="6" xl="6" md="8" cols="12" class="mx-auto">
+        <v-row no-gutters class="mb-10">
+          <v-col class="pa-2" cols="12">
             <div
-              v-if="item.from === 'user'"
-              :class="[' mr-2 rounded-lg pa-2 msg-width', item.msg ? 'bg-amber-lighten-4' : '']"
+              v-for="(item, index) in chat"
+              :key="index"
+              :class="[
+                'd-flex flex-row  my-3 align-center',
+                item.IsUserSend ? 'justify-end' : null,
+              ]"
             >
-              <v-row v-if="item.msg">
-                <v-col cols="12 " class="pa-0 px-3 pt-2"
-                  ><p class="grey-lighten-4 text-right text">
-                    {{ item.msg }}
-                  </p></v-col
-                >
-                <v-col
-                  cols="12"
-                  class="px-3 pb-2 pa-0 d-flex justify-space-between align-center"
-                  style="font-size: 0.7rem"
-                >
-                  <div><v-icon color="grey-darken-1">mdi-check-all</v-icon></div>
-                  <div>
-                    <p class="text-grey-darken-1">{{ item.time }}</p>
-                  </div></v-col
-                >
-              </v-row>
-              <v-row v-if="item.img">
-                <v-row justify="center">
-                  <v-dialog
-                    width="500"
-                    v-model="imgFullSize"
-                    fullscreen
-                    :scrim="false"
-                    transition="dialog-bottom-transition"
+              <div
+                v-if="item.IsUserSend"
+                :class="[
+                  ' mr-2 rounded-lg pa-2 msg-width',
+                  item.MessageType === 'text' ? 'bg-amber-lighten-4' : '',
+                ]"
+              >
+                <v-row v-if="item.MessageType === 'text'">
+                  <v-col cols="12 " class="pa-0 px-3 pt-2"
+                    ><p class="grey-lighten-4 text-right text">
+                      {{ item.Content }}
+                    </p></v-col
                   >
-                    <template v-slot:default="{ isActive }">
-                      <v-card>
-                        <v-card-actions style="background-color: black; height: 100vh">
-                          <v-img :src="item.img" width="auto" cover class="rounded-lg"> </v-img>
-                          <v-btn
-                            icon="mdi-close"
-                            position="absolute"
-                            style="top: 10px"
-                            color="white"
-                            size="x-large"
-                            @click="isActive.value = false"
-                          ></v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </template>
-                  </v-dialog>
+                  <v-col
+                    cols="12"
+                    class="px-3 pb-2 pa-0 d-flex justify-space-between align-center"
+                    style="font-size: 0.7rem"
+                  >
+                    <div>
+                      <v-icon color="grey-darken-1" v-if="item.loading">mdi-check</v-icon>
+                      <v-icon color="red" v-if="item.error">mdi-alert-circle</v-icon>
+                      <v-icon
+                        :color="item.Seen ? 'blue-accent-3' : 'grey-darken-1'"
+                        v-if="!item.loading && !item.error"
+                        >mdi-check-all</v-icon
+                      >
+                    </div>
+                    <div>
+                      <p class="text-grey-darken-1">{{ item.date }} {{ item.time }}</p>
+                    </div></v-col
+                  >
                 </v-row>
-                <v-img
-                  :src="item.img"
-                  :max-width="400"
-                  :width="200"
-                  @click="imgFullSize = true"
-                  cover
-                  class="rounded-lg"
-                >
-                </v-img>
-              </v-row>
+                <v-row v-if="item.MessageType === 'image'">
+                  <v-row justify="center">
+                    <v-dialog
+                      width="500"
+                      v-model="imgFullSize"
+                      fullscreen
+                      :scrim="false"
+                      transition="dialog-bottom-transition"
+                    >
+                      <template v-slot:default="{ isActive }">
+                        <v-card>
+                          <v-card-actions style="background-color: black; height: 100vh">
+                            <v-img :src="fullSizePreviewImg" width="auto" cover class="rounded-lg">
+                            </v-img>
+                            <v-btn
+                              icon="mdi-close"
+                              position="absolute"
+                              style="top: 10px"
+                              color="white"
+                              size="x-large"
+                              @click="isActive.value = false"
+                            ></v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </template>
+                    </v-dialog>
+                  </v-row>
+                  <div>
+                    <v-img
+                      :src="item.image"
+                      :max-width="400"
+                      :width="200"
+                      @click="imgFullSizePreview(item.image)"
+                      cover
+                      class="rounded-t-lg"
+                    >
+                    </v-img>
+                    <v-col
+                      cols="12"
+                      class="px-3 pa-0 d-flex justify-space-between align-center align-self-end text-subtitle bg-amber-lighten-4 rounded-b-lg"
+                    >
+                      <div>
+                        <v-icon color="grey-darken-1" v-if="item.loading">mdi-check</v-icon>
+                        <v-icon color="red" v-if="item.error">mdi-alert-circle</v-icon>
+                        <v-icon
+                          :color="item.Seen ? 'blue-accent-3' : 'grey-darken-1'"
+                          v-if="!item.loading && !item.error"
+                          >mdi-check-all</v-icon
+                        >
+                      </div>
+                      <div>
+                        <p class="text-grey-darken-1">{{ item.date }} {{ item.time }}</p>
+                      </div></v-col
+                    >
+                  </div>
+                </v-row>
+              </div>
+              <v-avatar :color="item.IsUserSend ? 'amber-darken-4' : 'teal-accent-4'" size="36">
+                <v-icon class="white--text" v-if="item.IsUserSend">mdi-account</v-icon>
+                <v-icon class="white--text" v-if="!item.IsUserSend">mdi-support</v-icon>
+              </v-avatar>
+              <div
+                v-if="!item.IsUserSend"
+                class="bg-teal-lighten-5 ml-2 rounded-lg pa-2 text msg-width"
+              >
+                <v-row v-if="item.MessageType === 'text'">
+                  <v-col cols="12" class="pt-3 pa-0 text-right px-3"
+                    ><p>{{ item.Content }}</p></v-col
+                  >
+                  <v-col cols="12" class="pb-2 pa-0 px-3"
+                    ><p class="text-grey-darken-1">{{ item.time }} {{ item.date }}</p></v-col
+                  >
+                </v-row>
+                <v-row v-if="item.MessageType === 'image'" class="bg-teal-lighten-5 rounded-lg">
+                  <v-row justify="center">
+                    <v-dialog
+                      width="500"
+                      v-model="imgFullSize"
+                      fullscreen
+                      :scrim="false"
+                      transition="dialog-bottom-transition"
+                    >
+                      <template v-slot:default="{ isActive }">
+                        <v-card>
+                          <v-card-actions style="background-color: black; height: 100vh">
+                            <v-img :src="fullSizePreviewImg" width="auto" cover class="rounded-lg">
+                            </v-img>
+                            <v-btn
+                              icon="mdi-close"
+                              position="absolute"
+                              style="top: 10px"
+                              color="white"
+                              size="x-large"
+                              @click="isActive.value = false"
+                            ></v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </template>
+                    </v-dialog>
+                  </v-row>
+                  <div>
+                    <v-img
+                      :src="item.image"
+                      :max-width="400"
+                      :width="200"
+                      @click="imgFullSizePreview(item.image)"
+                      cover
+                    >
+                      <template v-slot:placeholder>
+                        <div class="d-flex align-center justify-center fill-height bg-black">
+                          <v-progress-circular
+                            color="grey-lighten-4"
+                            indeterminate
+                          ></v-progress-circular>
+                        </div>
+                      </template>
+                    </v-img>
+                    <v-col
+                      cols="12"
+                      class="px-3 pa-0 d-flex justify-space-between align-center align-self-end text-subtitle"
+                    >
+                      <div>
+                        <v-icon color="grey-darken-1" v-if="item.loading">mdi-check</v-icon>
+                        <v-icon color="red" v-if="item.error">mdi-alert-circle</v-icon>
+                        <v-icon
+                          :color="item.Seen ? 'blue-accent-3' : 'grey-darken-1'"
+                          v-if="!item.loading && !item.error"
+                          >mdi-check-all</v-icon
+                        >
+                      </div>
+                      <div>
+                        <p class="text-grey-darken-1">{{ item.date }} {{ item.time }}</p>
+                      </div></v-col
+                    >
+                  </div>
+                </v-row>
+              </div>
             </div>
-            <v-avatar :color="item.from == 'user' ? 'amber-darken-4' : 'teal-accent-4'" size="36">
-              <v-icon class="white--text" v-if="item.from == 'user'">mdi-account</v-icon>
-              <v-icon class="white--text" v-if="item.from == 'support'">mdi-support</v-icon>
-            </v-avatar>
-            <div
-              v-if="item.from != 'user'"
-              class="bg-teal-lighten-5 ml-2 rounded-lg pa-2 text msg-width"
-            >
+          </v-col>
+        </v-row>
+        <v-col
+          class="bg-grey-lighten-4 pa-2 type-box mx-auto"
+          lg="6"
+          xl="6"
+          md="8"
+          cols="12"
+          v-if="chatImg.length > 0"
+        >
+          <v-btn icon="mdi-close" position="absolute" @click="closePreview"></v-btn>
+          <v-col cols="12" class="rounded-lg">
+            <p class="text-center text-error" v-if="imgInvalid">عکس باید کمتر از ۱۰ مگابایت باشد</p>
+            <v-img :src="imgSrc" :max-width="400" :width="200" class="mx-auto">
+              <template v-slot:placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
+                </div> </template
+            ></v-img>
+          </v-col>
+        </v-col>
+        <v-container class="align-center py-2 msg-field" fluid>
+          <v-row class="bg-white align-center" style="height: 4rem">
+            <v-col lg="6" xl="6" md="8" cols="12" class="mx-auto pa-2">
               <v-row>
-                <v-col cols="12" class="pt-3 pa-0 text-right px-3"
-                  ><p>{{ item.msg }}</p></v-col
+                <v-col cols="10" class="pa-0">
+                  <v-text-field
+                    v-model="msg"
+                    placeholder="پیام خود را بنویسید..."
+                    @keypress.enter="send"
+                    :hide-details="true"
+                    color="teal-accent-4"
+                    style="font-size: 0.8rem"
+                  ></v-text-field
+                ></v-col>
+                <v-col cols="1" class="pa-0 d-flex">
+                  <v-file-input
+                    accept="image/png, image/jpeg,image/heic"
+                    prepend-icon="mdi-camera"
+                    :hide-details="true"
+                    class="image-input text-teal-accent-4 d-flex justify-end"
+                    :rules="rules"
+                    v-model="chatImg"
+                  ></v-file-input>
+                </v-col>
+                <v-col
+                  cols="1"
+                  class="pa-0 d-flex align-center justify-start ml-lg-n4 ml-xl-n4 ml-md-n4"
                 >
-                <v-col cols="12" class="pb-2 pa-0 px-3"
-                  ><p class="text-grey-darken-1">{{ currentHour }}</p></v-col
-                >
+                  <v-btn icon size="large" @click="send"
+                    ><v-icon color="teal-accent-4">mdi-send</v-icon></v-btn
+                  >
+                </v-col>
               </v-row>
-            </div>
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-container class="type-box">
-      <v-row class="bg-grey-lighten-4 pa-2" v-if="chatImg.length > 0">
-        <v-btn icon="mdi-close" position="absolute" @click="closePreview"></v-btn>
-        <v-col cols="12" class="rounded-lg">
-          <p class="text-center text-error" v-if="imgInvalid">عکس باید کمتر از ۱۰ مگابایت باشد</p>
-          <v-img :src="getImageUrl" :max-width="400" :width="200" class="mx-auto">
-            <template v-slot:placeholder>
-              <div class="d-flex align-center justify-center fill-height">
-                <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
-              </div> </template
-          ></v-img>
-        </v-col>
-      </v-row>
-      <v-row class="align-center py-2" no-gutters>
-        <v-col cols="10" class="pa-0">
-          <v-text-field
-            v-model="msg"
-            placeholder="پیام خود را بنویسید..."
-            @keypress.enter="send"
-            :hide-details="true"
-            color="teal-accent-4"
-            style="font-size: 0.8rem"
-          ></v-text-field
-        ></v-col>
-        <v-col cols="1" class="pa-0">
-          <v-file-input
-            accept="image/png, image/jpeg, image/bmp, image/tiff"
-            prepend-icon="mdi-camera"
-            :hide-details="true"
-            class="image-input text-teal-accent-4 d-flex justify-end"
-            :rules="rules"
-            v-model="chatImg"
-          ></v-file-input>
-        </v-col>
-        <v-col cols="1" class="pa-0">
-          <v-btn icon size="large" @click="send" class="ml-2"
-            ><v-icon color="teal-accent-4">mdi-send</v-icon></v-btn
-          >
-        </v-col>
-      </v-row>
-    </v-container>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
+import heic2any from "heic2any";
 export default {
-  setup() {
+  props: {
+    messages: {
+      type: Array,
+      required: true,
+    },
+  },
+  setup(props) {
     const imgFullSize = ref(false);
+    const fullSizePreviewImg = ref("");
+    const imgSrc = ref("");
+    const extractTime = (d) => {
+      const hour = d.getHours();
+      const minutes = String(d.getMinutes()).padStart(2, "0");
+      const currentHour = `${String(hour).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+      return currentHour;
+    };
+    const getTime = computed(() => {
+      return extractTime(new Date());
+    });
+    const getPersianDate = (date) => {
+      const d = date.toLocaleDateString("fa-IR");
+      const persianDate = useToEnglishDigits(d);
+      return persianDate;
+    };
+    const chat = ref(props.messages);
     const chatImg = ref([]);
-    const d = new Date();
-    const hour = d.getHours();
-    const minutes = String(d.getMinutes()).padStart(2, "0");
-    const currentHour = ref(hour + ":" + minutes);
-    const chat = ref([
-      { from: "support", msg: "سلام چجوری میتونم کمکتون کنم؟", time: currentHour.value, img: "" },
-    ]);
     const imgInvalid = ref(false);
     const msg = ref(null);
     const rules = computed(() => [
@@ -157,54 +284,116 @@ export default {
         return true;
       },
     ]);
-    const getImageUrl = computed(() => {
+    const getImageUrl = async () => {
       if (chatImg.value.length > 0 && !imgInvalid.value) {
-        return URL.createObjectURL(chatImg.value[0]);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          imgSrc.value = reader.result;
+        };
+        if (chatImg.value[0].type === "image/heic") {
+          try {
+            const result = await heic2any({ blob: chatImg.value[0] });
+            reader.readAsDataURL(result);
+          } catch (error) {
+            console.error("Error converting image:", error);
+          }
+        } else {
+          reader.readAsDataURL(chatImg.value[0]);
+        }
       }
-      return null;
+    };
+    watch(chatImg, (newVal) => {
+      if (newVal) {
+        getImageUrl();
+      }
     });
     const send = async () => {
+      const formData = new FormData();
+      let sendedMessage = {};
       if (msg.value) {
         chatImg.value = [];
-        chat.value.push({
-          from: "user",
-          msg: msg.value,
-          time: currentHour.value,
-        });
+        sendedMessage = {
+          Content: msg.value,
+          IsUserSend: true,
+          time: getTime.value,
+          date: getPersianDate(new Date()),
+          loading: ref(false),
+          error: ref(false),
+          Seen: false,
+          MessageType: "text",
+        };
+        chat.value.push(sendedMessage);
+        formData.append("Content", msg.value);
+        formData.append("MessageType", "text");
+        formData.append("File", "");
         msg.value = null;
         chatImg.value = [];
       } else if (chatImg.value.length > 0 && !imgInvalid.value) {
         msg.value = null;
-        chat.value.push({ from: "user", img: getImageUrl.value, time: currentHour.value });
+        sendedMessage = {
+          Content: msg.value,
+          image: imgSrc.value,
+          IsUserSend: true,
+          time: getTime.value,
+          date: getPersianDate(new Date()),
+          loading: ref(false),
+          error: ref(false),
+          Seen: false,
+          MessageType: "image",
+        };
+        chat.value.push(sendedMessage);
+        formData.append("Content", null);
+        formData.append("MessageType", "image");
+        if (chatImg.value[0].type === "image/heic") {
+          const result = await heic2any({ blob: chatImg.value[0] });
+          var file = new File([result],  chatImg.value[0].name,{ type: "image/jpeg"} );
+          console.log(file);
+          formData.append("File", file);
+        } else {
+          console.log(chatImg.value[0]);
+          formData.append("File", chatImg.value[0]);
+        }
+
         chatImg.value = [];
       } else {
         return;
       }
-      setTimeout(() => {
-        addReply();
-      }, 3000);
-    };
-    const addReply = () => {
-      chat.value.push({
-        from: "support",
-        msg: "سلام",
-      });
+      try {
+        const data = await useMyFetch(
+          "/Message/send",
+          sendedMessage.loading,
+          sendedMessage.error,
+          "post",
+          "",
+          formData
+        );
+        console.log(data);
+      } catch (error) {
+        error = true;
+        console.error("Error fetching data:", error);
+      }
     };
     const closePreview = () => {
       chatImg.value = [];
     };
+    const imgFullSizePreview = (image) => {
+      imgFullSize.value = true;
+      fullSizePreviewImg.value = image;
+    };
+
     return {
       chat,
       msg,
       send,
-      addReply,
-      currentHour,
+      getTime,
       rules,
       chatImg,
-      getImageUrl,
+      imgSrc,
       imgInvalid,
       closePreview,
       imgFullSize,
+      imgFullSizePreview,
+      fullSizePreviewImg,
     };
   },
 };

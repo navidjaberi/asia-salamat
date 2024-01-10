@@ -1,5 +1,6 @@
 import vuetify from "vite-plugin-vuetify";
-
+import type { NuxtPage } from "nuxt/schema";
+import { useAuthentication } from "~/store/auth";
 // PWA Config
 const title = "AsiaSalamat";
 const shortTitle = "AsiaSalamat";
@@ -15,24 +16,44 @@ export default defineNuxtConfig({
   // enable takeover mode
   typescript: { shim: false },
   build: { transpile: ["vuetify"] },
-  ssr:false,
- runtimeConfig:{
-  public: {
-    baseURL: process.env.BASE_URL || 'http://asiasalamat.ir',
+  ssr: false,
+  runtimeConfig: {
+    public: {
+      baseURL: process.env.BASE_URL || "http://asiasalamat.ir",
+    },
   },
- },
   modules: [
     "@kevinmarrec/nuxt-pwa",
-    '@vee-validate/nuxt',
+    "@vee-validate/nuxt",
+    "@sidebase/nuxt-pdf",
     async (options, nuxt) => {
       nuxt.hooks.hook("vite:extendConfig", (config) => {
         config.plugins ||= [];
         config.plugins.push(vuetify());
       });
     },
-    '@pinia/nuxt',
+    "@pinia/nuxt",
   ],
+  hooks: {
+    "pages:extend"(pages) {
+      function setMiddleware(pages: NuxtPage[]) {
+        for (const page of pages) {
+          if (page.path === "/" || page.path === "/confirm") {
+            page.meta ||= {};
+            page.meta.middleware = ["not-logged", "is-logged"];
+          } else {
+            page.meta ||= {};
+            page.meta.middleware = ["not-logged"];
+          }
 
+          if (page.children) {
+            setMiddleware(page.children);
+          }
+        }
+      }
+      setMiddleware(pages);
+    },
+  },
   app: {
     head: {
       title: "Asia Salamat",
@@ -43,7 +64,7 @@ export default defineNuxtConfig({
         { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
         { rel: "canonical", href: url },
       ],
-      htmlAttrs: { dir: 'rtl', lang: 'fa' },
+      htmlAttrs: { dir: "rtl", lang: "fa" },
       meta: [
         {
           hid: "description",
@@ -77,7 +98,6 @@ export default defineNuxtConfig({
           property: "og:image",
           content: image,
         },
-       
       ],
     },
   },

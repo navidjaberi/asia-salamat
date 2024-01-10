@@ -1,6 +1,6 @@
 <template>
   <v-app-bar color="grey-lighten-5" elevation="1">
-    <v-app-bar-nav-icon variant="text" style="position: absolute">
+    <v-app-bar-nav-icon variant="text" style="position: absolute;left: 2px;">
       <v-btn prepend-icon="mdi-arrow-left" block @click="baseRouteBackHandler">
         <template v-slot:prepend>
           <v-icon></v-icon>
@@ -15,8 +15,8 @@
 
     <v-form class="px-4 mt-6" :class="formClass" @submit.prevent="baseSubmit" ref="formRef" v-if="!subPagesMode">
       <slot v-if="!subPagesMode" />
-      <v-row :class="[ bottomBtn ? 'btn-row' : 'my-2 ']">
-        <v-col>
+      <v-row :class="[ bottomBtn ? 'btn-row' : 'my-5 ','d-flex justify-space-between px-4']">
+        <v-col cols="6" lg="2" xl="2" xxl="1" md="3" >
           <v-btn
             v-if="!firstIndex"
             prepend-icon="mdi-arrow-left"
@@ -31,7 +31,7 @@
             </template>
           </v-btn>
         </v-col>
-        <v-col>
+        <v-col cols="6" lg="2" xl="2" xxl="1" md="3" >
           <v-btn append-icon="mdi-arrow-right" class="bg-teal-lighten-5" type="submit" block>
             مرحله بعد
 

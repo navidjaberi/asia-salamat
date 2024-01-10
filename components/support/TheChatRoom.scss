@@ -3,6 +3,36 @@
     display: flex;
     justify-content: center;
   }
+  .btn-animation {
+    animation: moveUpDown 4s infinite;
+  }
+  @keyframes moveUpDown {
+    0% {
+      transform: translateY(0);
+    }
+    20% {
+      transform: translateY(-30px);
+    }
+    40% {
+      transform: translateY(0);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+    70% {
+      transform: translateY(0);
+    }
+    80% {
+      transform: translateY(-5px);
+    }
+    90% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
   .v-overlay__content {
     position: unset !important;
   }
@@ -11,8 +41,8 @@
     flex-direction: column-reverse;
     position: relative;
   }
-  .msg-width{
-    max-width: 80%!important;
+  .msg-width {
+    max-width: 80% !important;
   }
   .v-input__control {
     width: 100%;
@@ -27,7 +57,7 @@
   }
   .type-box {
     position: fixed;
-    bottom: 0px;
+    bottom: 40px;
     width: 100vw;
     padding: 0px 7px;
     background-color: #ffffff;
@@ -49,14 +79,20 @@
 
     transform: translate(-50%, 50%);
   }
-
+  .msg-field {
+    position: fixed;
+    bottom: -27px;
+    right: 50%;
+    transform: translate(50%, -50%);
+    width: 99%;
+  }
   .image-input {
     .v-field__input,
     .v-input__control {
       display: none;
     }
     .v-input__prepend {
-      margin-inline-end: 0px;
+      margin: 0 auto;
     }
   }
 }

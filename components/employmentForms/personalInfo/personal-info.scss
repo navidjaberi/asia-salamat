@@ -45,10 +45,20 @@
     border-radius: 5px !important;
     font-size: 0.6rem !important;
     text-align: center !important;
-    height: 40px !important;
-    padding: 0px 8px !important;
+    margin: 0px !important;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0px!important;
   }
-
+  .birthday-error {
+    justify-content: end !important;
+    color: red;
+    margin-top: -20px;
+    hyphens: none !important;
+    text-align: right !important;
+    font-size: 0.6rem !important;
+  }
   .v-auto-complete--menu-active {
     text-align: right !important;
   }

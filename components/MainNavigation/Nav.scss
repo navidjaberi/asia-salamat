@@ -1,0 +1,37 @@
+.navigation {
+  .tabs {
+    letter-spacing: 0 !important;
+    height: 85px !important;
+  }
+  .v-tabs {
+    --v-tabs-height: 100% !important;
+  }
+  .v-slide-group-item--active {
+    border: none !important;
+    outline: none !important;
+  }
+  .v-slide-group__container {
+    background-color: white;
+  }
+  a {
+    width: 50%;
+  }
+  button {
+    width: 100%;
+  }
+}
+.navigation-mobile {
+  .tabs {
+    letter-spacing: 0 !important;
+    height: 60px !important;
+  }
+
+  .v-slide-group__container {
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+  }
+  .v-tab--selected {
+    max-width: 600px !important;
+  }
+}

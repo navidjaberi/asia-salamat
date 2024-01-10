@@ -1,16 +1,20 @@
 const formInputs = [
-  { title: "آیا از مواد مخدر استفاده میکنید؟", id: 1, value: "خیر" },
-  { title: "آیا از سیگار استفاده میکنید؟", id: 2, value: "خیر" },
-  { title: "آیا از مشروبات الکلی استفاده میکنید؟", id: 3, value: "خیر" },
-  { title: "آیا دارای معلولیت جسمی هستید؟", id: 4, value: "خیر" },
-  { title: "آیا بیماری خاصی دارید؟", id: 5, value: "خیر" },
-  { title: "آیا دارای سابقه حکومت کیفری هستید؟", id: 6, value: "خیر" },
+  { title: "آیا از مواد مخدر استفاده میکنید؟", id: "Drug", value:false },
+  { title: "آیا از سیگار استفاده میکنید؟", id: "Smoke", value:false },
+  { title: "آیا از مشروبات الکلی استفاده میکنید؟", id: "Alcoholic", value:false },
+  { title: "آیا دارای معلولیت جسمی هستید؟", id: "Disability", value:false },
+  { title: "آیا بیماری خاصی دارید؟", id: "SpecialDisease", value:false },
+  { title: "آیا دارای سابقه حکومت کیفری هستید؟", id: "Criminal", value:false },
   {
     title:
       "آیا میخواهید در حین فعالبت یک یا چند نفر از اعضای خانواده شما کنارتان حضور داشته باشند؟",
-    id: 7,
-    value: "خیر",
+    id: "Family",
+    value:false,
   },
-  { title: "آیا مدرک تخصصی در زمینه پرستاری و درمانی دارید؟", id: 7, value: "خیر" },
+  {
+    title: "آیا مدرک تخصصی در زمینه پرستاری و درمانی دارید؟",
+    id: "SpecializedDegree",
+    value:false,
+  },
 ];
 export default formInputs;

@@ -1,17 +1,21 @@
 <template>
   <div>
     <VApp>
-      <pageBaseLayout title="آموزشگاه" :subPagesMode="true" @baseRouteBackHandler="routBackHandler">
-        <div class="text-center mt-4">
-          <v-progress-circular
-            v-if="loading"
-            indeterminate
-            color="teal-accent-4"
-          ></v-progress-circular>
-        </div>
+      <GlobalPageBaseLayout title="آموزشگاه" :subPagesMode="true" @baseRouteBackHandler="routBackHandler">
+        <BaseLoadingAndError :loading="loading" :error="error"/>
+        <v-snackbar
+          :timeout="2000"
+          color="teal-accent-4"
+          rounded="pill"
+          location="top"
+          v-model="openAlert"
+        >
+          <template v-slot:activator="{ props }"> </template>
+          <p class="text text-center">کلاس مورد نظر به زودی به لیست کلاس ها اضافه خواهد شد</p>
+        </v-snackbar>
         <v-col class="pa-0 d-flex flex-wrap">
-          <v-col cols="6" v-for="item in academyMenu" :key="item.Id" class="pa-2">
-            <NuxtLink :to="item.link">
+          <v-col cols="6" xxl="2" xl="2" lg="3" md="3" v-for="item in academyMenu" :key="item.Id" class="pa-2">
+            <NuxtLink :to="!item.disable ? item.link : ''" @click="disableAlert(item)">
               <v-card class="mx-auto mt-4" link rounded elevated>
                 <v-img :src="item.image" class="mx-auto" :alt="item.Title" aspect-ratio="1" cover>
                   <template v-slot:placeholder>
@@ -38,35 +42,42 @@
             </NuxtLink>
           </v-col>
         </v-col>
-      </pageBaseLayout>
+      </GlobalPageBaseLayout>
     </VApp>
   </div>
 </template>
 <script>
-import pageBaseLayout from "~/components/pageBaseLayout.vue";
 import { useAcademyStore } from "~/store/academy";
 export default {
-  components: { pageBaseLayout },
   setup() {
     const router = useRouter();
-    const store=useAcademyStore()
-    const academyMenu = computed(()=>{
-      return store.academyData});
-
+    const store = useAcademyStore();
+    const openAlert = ref(false);
+    const academyMenu = computed(() => {
+      return store.academyData;
+    });
     const loading = ref(false);
+    const error=ref(false)
+    const disableAlert = (i) => {
+      if (i.disable) {
+        openAlert.value = true;
+      }
+    };
     const routBackHandler = () => {
       router.push("/home");
     };
     onMounted(() => {
-      store.getAcademyData(loading)
+      store.getAcademyData(loading,error);
     });
-
     return {
       routBackHandler,
       academyMenu,
       loading,
+      openAlert,
+      disableAlert,
+      error
     };
   },
 };
 </script>
-<style></style>
+

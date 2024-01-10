@@ -1,55 +1,61 @@
 <template>
   <div>
     <VApp>
-      <v-card>
+      <v-card class="app-bar">
         <v-layout>
           <v-app-bar color="white" elevation="1">
-            <img :src="logo" :width="170" class="mr-3" alt="Asiasalamat logo" />
-            <v-spacer></v-spacer>
-            <div>
-              <NuxtLink to="/messages"
-                ><v-btn variant="text" class="ml-2" icon="mdi-email-outline" size="xl"></v-btn
-              ></NuxtLink>
-              <v-app-bar-nav-icon
-                variant="text"
-                @click.stop="drawer = !drawer"
-              ></v-app-bar-nav-icon>
-            </div>
+            <v-row class="px-2">
+              <v-col cols="3" class="d-flex align-center">
+                <img :src="logo" :width="170" class="mr-3" alt="Asiasalamat logo" />
+              </v-col>
+              <v-col cols="6" class="d-flex align-center">
+                <MainNavigationNav v-if="xlAndUp" />
+              </v-col>
+              <v-col cols="3" class="d-flex align-center justify-end">
+                <NuxtLink to="/messages">
+                  <v-btn variant="text">
+                    <v-icon size="xx-large">mdi-email-outline</v-icon>
+                  </v-btn></NuxtLink
+                >
+
+              
+                  <v-dialog v-model="dialog" persistent width="auto">
+                    <template v-slot:activator="{ props }">
+                      <v-btn
+                        variant="text"
+                        icon="mdi-exit-to-app"
+                        size="x-large"
+                        density="compact"
+                        class="mx-1"
+                        v-bind="props"
+                      >
+                      </v-btn>
+                    </template>
+                    <v-row justify="center">
+                    <v-card>
+                      <v-card-text class="text-title">
+                        آيا مایل به خروج از آسیاسلامت هستید؟
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="teal-accent-4" variant="text" @click="dialog = false">
+                          خیر
+                        </v-btn>
+                        <v-btn color="teal-accent-4" variant="text" @click="logoutHandler">
+                          بله
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-row>
+                  </v-dialog>
+               
+              </v-col>
+            </v-row>
           </v-app-bar>
 
-          <v-navigation-drawer v-model="drawer" location="right" :width="230" temporary>
-            <v-list>
-              <v-container class="avatar">
-                <div>
-                  <v-avatar color="info" size="x-large">
-                    <v-icon icon="mdi-account-circle"></v-icon>
-                  </v-avatar>
-                  <div><p class="mt-3 text-white">Navid Jaberi</p></div>
-                </div>
-              </v-container>
-            </v-list>
-            <v-list class="text-right text-grey-darken-2 font-weight-bold" style="font-size: 12px">
-              <v-list-item>
-                تماس با ما
-
-                <v-icon icon="mdi-account-box" class="ml-3"></v-icon>
-              </v-list-item>
-              <v-divider></v-divider>
-              <v-list-item>
-                خروج
-                <v-icon icon="mdi-exit-to-app" class="ml-3"></v-icon>
-              </v-list-item>
-            </v-list>
-            <template v-slot:append>
-              <div>
-                <p class="text-center text-grey-darken-1 mb-3">توسعه و طراحی توسط رایانیارش کارا</p>
-              </div>
-            </template>
-          </v-navigation-drawer>
-
-          <v-main style="min-height: 100vh !important; display: flex; flex-direction: column">
+          <v-main class="main">
             <slot />
-            <TheNavigation />
+            <MainNavigationNav v-if="!xlAndUp" :mobile="!xlAndUp" />
           </v-main>
         </v-layout>
       </v-card>
@@ -57,38 +63,49 @@
   </div>
 </template>
 <script>
-import TheNavigation from "~/components/navigation/TheNavigation.vue";
 import logo from "~/assets/img/icons/main-logo.png";
+import { useDisplay } from "vuetify";
+import { useAuthentication } from "~/store/auth";
 export default {
-  components: { TheNavigation },
   setup() {
+    const store = useAuthentication();
+    const cookie = useCookie("userToken");
+    const router = useRouter();
     const drawer = ref(false);
+    const dialog = ref(false);
+    const { xlAndUp } = useDisplay();
+    const logoutHandler = () => {
+      cookie.value = null;
+      store.accessToken = null;
+      localStorage.clear();
+      router.push("/");
+    };
     return {
       drawer,
+      dialog,
       logo,
+      xlAndUp,
+      logoutHandler,
     };
   },
 };
 </script>
-<style scoped>
-.avatar {
-  height: 170px;
-  width: 350px;
-  background-color: aqua;
-  border-radius: 49%;
-  margin-left: -55px;
-  margin-right: -9px;
-  margin-top: -41px;
-  background: rgb(1, 52, 57);
-  background: linear-gradient(
-    90deg,
-    rgba(1, 52, 57, 1) 0%,
-    rgba(9, 98, 96, 1) 51%,
-    rgba(7, 181, 205, 1) 100%
-  );
-}
-.avatar div {
-  text-align: center;
-  margin-top: 15px;
+<style>
+.app-bar {
+  .v-toolbar__content {
+    height: 85px !important;
+  }
+  .v-badge--dot .v-badge__badge {
+    width: 11px !important;
+    height: 11px !important;
+    bottom: calc(100% - 13px) !important;
+    left: calc(100% - -21px) !important;
+    z-index: 1;
+  }
+  .main {
+    min-height: 100vh !important;
+    display: flex;
+    flex-direction: column;
+  }
 }
 </style>

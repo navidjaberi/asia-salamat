@@ -32,8 +32,14 @@
     <p class="text-title">ساعت های خود را انتخاب کنید</p>
     <v-row>
       <v-col class="mt-5 d-flex justify-space-around">
-        <v-btn variant="elevated" color="teal-accent-4" >{{ hours }}</v-btn>
-      
+        <v-btn
+          v-for="(item, index) in hours"
+          variant="elevated"
+          :color="hourColor(index)"
+          key="index"
+          @click="hourHandler(index)"
+          >{{ item }}</v-btn
+        >
       </v-col>
     </v-row>
   </v-card>
@@ -49,15 +55,27 @@ export default {
       type: Boolean,
       required: true,
     },
-    hours:{
-      type:String,
-      required:true,
-      default:''
-    }
+    hours: {
+      type: String,
+      required: true,
+      default: "",
+    },
   },
   setup(props) {
+    const hours = computed(() => {
+      const array = props.hours.split(",");
+      const trimmedArray = array.map((item) => item.trim());
+      return trimmedArray;
+    });
+    const hourHandler = (index) => {
+      selectedHourIndex.value = index;
+    };
     const even = ref(false);
     const odd = ref(false);
+    const selectedHourIndex = ref(0);
+    const hourColor = (index) => {
+      return index === selectedHourIndex.value ? "teal-accent-4" : "";
+    };
     const dayToggleHandler = (type) => {
       if (type === "even") {
         even.value = true;
@@ -71,20 +89,26 @@ export default {
       }
     };
     const reactiveProps = computed(() => [props.oddDays, props.evenDays]);
+ 
     watch(reactiveProps, ([newOdd, newEven]) => {
       if (newOdd && newEven) {
         newOdd = false;
         even.value = newEven;
+       
       }
       odd.value = newOdd;
       even.value = newEven;
     });
-
+    onMounted(()=>{
+      even.value=true
+    })
     return {
       dayToggleHandler,
       even,
       odd,
-  
+      hours,
+      hourHandler,
+      hourColor,
     };
   },
 };
