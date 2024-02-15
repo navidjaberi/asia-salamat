@@ -3,7 +3,7 @@
     <VApp>
       <v-app-bar
         color="grey-lighten-5
-"
+"       :height=50
         elevation="1"
       >
       </v-app-bar>

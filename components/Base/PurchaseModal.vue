@@ -3,29 +3,20 @@
     <template v-slot:default="{ isActive }">
       <v-card class="rounded-xl">
         <v-toolbar color="teal-accent-4"
-          ><p class="text-center text-title font-weight-bold pa-5">
+          ><p class="text-center text-title  pa-5">
             نحوه پرداخت خود را انتخاب کنید
           </p></v-toolbar
         >
         <v-card-text>
           <v-row>
-            <NuxtLink to=""  class="w-50">
-              <v-card link class="elevation-0"
-                ><v-img
-                  :width="100"
-                  :height="120"
-                  class="mx-auto"
-                  :src="installmentPurchase"
-                ></v-img>
-                <p class="text font-weight-bold text-center">پرداخت اقساطی<br />(آنلاین)</p>
-              </v-card></NuxtLink
-            >
+            <v-card link class="elevation-0 w-50" @click="installmentPurchasePay"
+              ><v-img :width="100" :height="120" class="mx-auto" :src="installmentPurchase"></v-img>
+              <p class="text  text-center">پرداخت اقساطی<br />(آنلاین)</p>
+            </v-card>
             <v-divider vertical></v-divider>
-            <NuxtLink to="" class="w-50">
-              <v-card link class="elevation-0"
-                ><v-img :width="160" :height="120" :src="cashPurchase"></v-img>
-                <p class="text font-weight-bold text-center">پرداخت نقدی <br />(آنلاین)</p></v-card
-              ></NuxtLink
+            <v-card link class="elevation-0 w-50" @click="cashPurchasePay"
+              ><v-img :width="160" :height="120" :src="cashPurchase"></v-img>
+              <p class="text  text-center">پرداخت نقدی <br />(آنلاین)</p></v-card
             >
           </v-row>
         </v-card-text>
@@ -55,16 +46,19 @@ export default {
         emit("update:dialog", newVal);
       },
     });
-    const installmentPurchaseHandler = () => {
-      console.log("object");
+    const installmentPurchasePay = () => {
+      emit("installmentPurchasePay");
+    };
+    const cashPurchasePay = () => {
+      emit("cashPurchasePay");
     };
     return {
+      installmentPurchasePay,
+      cashPurchasePay,
       installmentPurchase,
-      installmentPurchaseHandler,
       cashPurchase,
       openModal,
     };
   },
- 
 };
 </script>

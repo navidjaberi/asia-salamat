@@ -1,8 +1,8 @@
 <template>
-  <v-container class="d-flex justify-center align-center text-center p-5 h-screen" >
+  <v-container class="d-flex justify-center align-center text-center p-5 h-screen">
     <v-row>
       <v-col>
-        <p class="font-weight-bold">
+        <p class="">
           کارشناسان ما در کمتر از ۳۰ دقیقه آینده با شما جهت ارائه توضیحات بیشر تماس میگیرند
         </p></v-col
       >
@@ -30,6 +30,6 @@ export default {
   position: absolute;
   bottom: 3rem;
   left: 50%;
-  transform: translate(-50%,50%);
+  transform: translate(-50%, 50%);
 }
 </style>

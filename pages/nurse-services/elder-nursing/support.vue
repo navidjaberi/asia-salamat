@@ -1,6 +1,5 @@
 <template>
-  <NurseServicesBaseSupport />
-  />
+  <GlobalSupport />
 </template>
 <script>
 export default {};

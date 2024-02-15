@@ -8,6 +8,7 @@
         @baseRouteBackHandler="routBackHandler"
         @baseSubmit="submit"
       >
+        <BaseLoadingAndError :loading="loading" :error="error" class="mb-3" :postData="true" />
         <v-row no-gutters class="px-3">
           <v-col xxl="5" xl="6" lg="7" md="8" cols="12" class="mx-auto">
             <v-text-field
@@ -67,7 +68,7 @@
     </VApp>
   </div>
 </template>
-<script>;
+<script>
 export default {
   props: {
     mode: {
@@ -80,40 +81,57 @@ export default {
     const router = useRouter();
     const currentRoute = ref(routes.fullPath.substring(0, routes.fullPath.indexOf("/info")));
     const form = ref(null);
+    const error = ref(false);
+    const loading = ref(false);
     const info = ref({
       name: "",
       phoneNumber: "",
       howToKnow: "",
     });
+    //input validations
     const rules = ref({
       text: [
         (value) => {
-          if (value) return true;
-          return "لطفا فیلد اجباری را پر کنید";
+          if (/[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF]$/.test(value)) return true;
+          return "(از کیبورد فارسی استفاده کنید)فیلد اجباری را پر کنید";
         },
       ],
       num: [
         (value) => {
-          if (value?.length === 11 && /[0-9-]+/.test(value) && /^09\d{9}$/.test(value)) return true;
-          return "شماره تلفن را به درستی وارد کنید(از اعداد انگلیسی استفاده کنید)";
+          if (
+            (value?.length === 11 && /[0-9-]+/.test(value) && /^09\d{9}$/.test(value)) ||
+            (/[۰-۹-]+/.test(value) && /^۰۹[۰-۹]{9}$/.test(value))
+          )
+            return true;
+          return "شماره تلفن را به درستی وارد کنید";
         },
       ],
     });
+    //get local storage key for each mode
     const localKey = computed(() => {
-      if (props.mode === "child") {
+      if (props.mode === "Kid") {
         return "nurseReserveChild-info";
-      } else if (props.mode === "elder") {
+      } else if (props.mode === "OldAge") {
         return "nurseReserveElder-info";
-      } else if (props.mode === "sick") {
+      } else if (props.mode === "Patient") {
         return "nurseReserveSick-info";
       }
     });
+    //get the form previous step local storage key for each mode
+    const prevStepLocalKey = ref(localKey.value.substring(0, localKey.value.indexOf("-info")));
+
     const submit = async (valid) => {
       if (valid) {
-        const prevStepLocalKey = localKey.value.substring(0, localKey.value.indexOf("-info"));
-        localStorage.removeItem(localKey.value);
-        localStorage.removeItem(prevStepLocalKey);
-        router.push(`${currentRoute.value}/support`);
+        try {
+          const data = await useMyFetch("/Nurse/reserve", loading, error, "post", "", info.value);
+          console.log(data);
+          localStorage.removeItem(localKey.value);
+          localStorage.removeItem(prevStepLocalKey.value);
+          router.push(`${currentRoute.value}/support`);
+        } catch (error) {
+          error.value = true;
+          console.error("Error fetching data:", error);
+        }
       }
     };
     const routBackHandler = () => {
@@ -122,7 +140,13 @@ export default {
     };
     onMounted(() => {
       if (localStorage.getItem(localKey.value)) {
-        info.value = JSON.parse(localStorage.getItem(localKey.value));
+        info.value = { ...info.value, ...JSON.parse(localStorage.getItem(localKey.value)) };
+      }
+      if (localStorage.getItem(prevStepLocalKey.value)) {
+        const prevStepInfo = JSON.parse(localStorage.getItem(prevStepLocalKey.value));
+        info.value = { ...info.value, ...prevStepInfo };
+      } else {
+        router.push(currentRoute.value);
       }
     });
     return {
@@ -131,6 +155,8 @@ export default {
       submit,
       routBackHandler,
       info,
+      error,
+      loading,
     };
   },
 };

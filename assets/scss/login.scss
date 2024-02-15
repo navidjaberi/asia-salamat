@@ -1,0 +1,33 @@
+.login {
+    .v-text-field input.v-field__input {
+      text-align: right !important;
+      font-size: 0.7rem;
+      font-family: "sans","iran-sans";
+    }
+    .v-field-label--floating,
+    .v-field-label {
+      right: 10px !important;
+    }
+    .v-field__prepend-inner{
+      margin-bottom: 0.1rem;
+    }
+    .submit-btn {
+      position: absolute !important;
+      bottom: 10px;
+      width: 100vw;
+      max-width: 100vw;
+    }
+    .v-messages__message {
+      margin-top: 0.5rem;
+      hyphens: none !important;
+      line-height: 14px !important;
+    }
+  }
+  .confirm {
+    .submit-btn {
+      position: absolute !important;
+      bottom: 10px;
+      width: 100vw;
+      max-width: 100vw;
+    }
+  }

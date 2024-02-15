@@ -3,28 +3,32 @@
     <VApp>
       <GlobalPageBaseLayout
         title="شرایط و قوانین"
-        formClass=""
+        formClass="collaboration"
+        :bottomBtn="true"
         @baseRouteBackHandler="routBackHandler"
         @baseSubmit="submit"
       >
+        <BaseLoadingAndError :loading="loading" :error="postError" class="mb-3" :postData="true" />
         <v-container>
           <v-row>
             <v-col xxl="5" xl="6" lg="7" md="8" cols="12" class="pa-0 mx-auto">
               <v-row>
-                <v-col  >
+                <v-col>
                   <ol class="term-list">
-                    <li>اینجانب متعهد ميگردم راس ساعت قيد شده در محل كار ورود و خروج داشته باشم.</li>
+                    <li>
+                      اینجانب متعهد ميگردم راس ساعت قيد شده در محل كار ورود و خروج داشته باشم.
+                    </li>
                     <li>
                       اینجانب متعهد ميگردم خارج از شرايط قرارداد خدمات ارائه ندهم چنانچه در صورت عدم
                       تعهدات شركت آسياسلامت مجاز به برخورد قانونی می باشد.
                     </li>
                     <li>
-                      اینجانب متعهد ميگردم درخواست وام ، ضمانت ، حقوق بیشتر از طرف اول قرارداد ( کارفرما
-                      ) نداشته باشم .
+                      اینجانب متعهد ميگردم درخواست وام ، ضمانت ، حقوق بیشتر از طرف اول قرارداد (
+                      کارفرما ) نداشته باشم .
                     </li>
                     <li>
-                      اینجانب متعهد ميگردم در طول مدت ساعت كاری از محل كار بدون اطلاع به شركت خارج نشوم
-                      .
+                      اینجانب متعهد ميگردم در طول مدت ساعت كاری از محل كار بدون اطلاع به شركت خارج
+                      نشوم .
                     </li>
                     <li>
                       اینجانب متعهد ميگردم در صورت درخواست مرخصی و يا ترک كار 72 ساعت قبل به شركت و
@@ -41,53 +45,92 @@
                     </li>
                     <li>اینجانب متعهد ميگردم در صورت بروز هر مشکلی شركت را مطلع نمایم .</li>
                     <li>
-                      اینجانب تمام جزئيات فرم ثبت نام را مطالعه نموده و تمام اطلاعات را وارد شده را به
-                      صورت واقعیت اعلام نموده .
+                      اینجانب تمام جزئيات فرم ثبت نام را مطالعه نموده و تمام اطلاعات را وارد شده را
+                      به صورت واقعیت اعلام نموده .
                     </li>
                     <li>
                       اینجانب متعهد ميگردم تمام شرايط و قوانين شركت را انجام دهم در غير اين صورت در
-                      برابر شركت هيج ادعا و شكايتی نيز نداشته و شركت میتواند با توجه به سنديات و شواهد
-                      موجود نسبت به مدارک ضمانتی اینجانب از طريق مراجع ذيصالح اقدام نماید
+                      برابر شركت هيج ادعا و شكايتی نيز نداشته و شركت میتواند با توجه به سنديات و
+                      شواهد موجود نسبت به مدارک ضمانتی اینجانب از طريق مراجع ذيصالح اقدام نماید
                     </li>
                   </ol>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col class="d-flex justify-end align-center">
-                  <p style="font-size: 0.8rem; font-weight: bold">
-                    شرايط را <span class="text-teal-accent-4">قبول</span> دارم
-                  </p>
-                  <v-checkbox
+
+              <v-col class="d-flex justify-end align-center mb-8">
+                <p class="text-title">شرايط را <span class="text-teal-accent-4">قبول</span> دارم</p>
+                <v-checkbox
                   color="teal-accent-4"
+                  :error="error"
                   class="term-checkbox"
                   hide-details
                   :rules="[(v) => !!v || 'You must agree to continue!']"
-                  >
+                >
                 </v-checkbox>
               </v-col>
-            </v-row>
-            <v-col v-if="error" class="text-center" style="padding: 0px">
-              <p class="text-red" style="font-size: 0.7rem">برای ادامه باید با قوانين موافقت کنید</p>
             </v-col>
-          </v-col>
           </v-row>
-          </v-container>
-        </GlobalPageBaseLayout>
-      </VApp>
-    </div>
-  </template>
+        </v-container>
+      </GlobalPageBaseLayout>
+    </VApp>
+  </div>
+</template>
 <script>
 export default {
   setup() {
     const router = useRouter();
     const error = ref(false);
-    const submit = async (valid) => {
-      localStorage.removeItem('relativesInfo')
-      localStorage.removeItem('employmentPersonalInfo')
-      localStorage.removeItem('collaborationTerms')
-      localStorage.removeItem('personalRecords')
+    const loading = ref(false);
+    const postError = ref(false);
+    const paymentUrl = ref("");
+    //removing all forms data from local storage
+    const removeLocalItem = () => {
+      localStorage.removeItem("relativesInfo");
+      localStorage.removeItem("employmentPersonalInfo");
+      localStorage.removeItem("collaborationTerms");
+      localStorage.removeItem("personalRecords");
+      localStorage.removeItem("nurseImgNames");
+      localStorage.removeItem("pdfNum");
+    };
+    //getting user ID from local storage for payment
+    const getUserId = computed(() => {
+      const getId = localStorage.getItem("nurseEmploymentId");
+      return getId;
+    });
+    //make a request for getting the payment port Api
+    const payment = async () => {
+      try {
+        const data = await useMyFetch(
+          `/Nurse/payment?id=${getUserId.value}`,
+          loading,
+          postError,
+          "getWithToken"
+        );
+        if (data) {
+          paymentUrl.value = data;
+        }
+      } catch (err) {
+        error.value = true;
+        console.error("Error fetching data:", err);
+      }
+    };
+    //submit and posting data
+    const submit = (valid) => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
       if (valid) {
-        router.push("/home");
+        // removeLocalItem();
+        const newTab = window.open("", "_blank");
+        setTimeout(() => {
+          newTab.document.write("درحال انتقال به سایت پذیرنده");
+          newTab.location.href = paymentUrl.value;
+        }, 800);
+        if (newTab == null) {
+          error.value = true;
+        } else {
+          setTimeout(() => {
+            router.push("/support-contact");
+          }, 2000);
+        }
       } else {
         error.value = true;
       }
@@ -95,7 +138,10 @@ export default {
     const routBackHandler = () => {
       router.push("/employment/relatives-info");
     };
-    return { submit, routBackHandler, error };
+    onMounted(() => {
+      payment();
+    });
+    return { submit, routBackHandler, error, postError, loading };
   },
 };
 </script>

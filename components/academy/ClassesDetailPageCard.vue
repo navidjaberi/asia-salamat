@@ -43,8 +43,9 @@ export default {
       router.push(`/academy/${props.routeKeyword + routeTitle.value}/personal-info`);
     };
     onMounted(() => {
-      store.getAcademyClassesDetail(routeTitle.value);
-    });
+      
+      store.getAcademyClassesDetail(routeTitle.value,props.routeKeyword );
+    })
     return {
       routBackHandler,
       submit,

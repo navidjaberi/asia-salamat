@@ -2,36 +2,34 @@
   <div>
     <VApp>
       <v-card class="app-bar">
-        <v-layout>
           <v-app-bar color="white" elevation="1">
             <v-row class="px-2">
               <v-col cols="3" class="d-flex align-center">
-                <img :src="logo" :width="170" class="mr-3" alt="Asiasalamat logo" />
+                <img :src="logo" :width="150" class="mr-3" alt="Asiasalamat logo" />
               </v-col>
               <v-col cols="6" class="d-flex align-center">
                 <MainNavigationNav v-if="xlAndUp" />
               </v-col>
               <v-col cols="3" class="d-flex align-center justify-end">
-                <NuxtLink to="/messages">
-                  <v-btn variant="text">
-                    <v-icon size="xx-large">mdi-email-outline</v-icon>
-                  </v-btn></NuxtLink
-                >
-
               
-                  <v-dialog v-model="dialog" persistent width="auto">
-                    <template v-slot:activator="{ props }">
-                      <v-btn
-                        variant="text"
-                        icon="mdi-exit-to-app"
-                        size="x-large"
-                        density="compact"
-                        class="mx-1"
-                        v-bind="props"
-                      >
-                      </v-btn>
-                    </template>
-                    <v-row justify="center">
+                  <v-btn variant="text" size="x-large"      density="compact" @click="openMsg" class="mr-n2" icon="mdi-email-outline">
+                   
+                  </v-btn>
+
+                <v-dialog v-model="dialog" persistent width="auto">
+                  <template v-slot:activator="{ props }">
+                    <v-btn
+                      variant="text"
+                      icon="mdi-exit-to-app"
+                      size="x-large"
+                      density="compact"
+                      class="mx-1"
+                      v-bind="props"
+                    >
+                  
+                    </v-btn>
+                  </template>
+                  <v-row justify="center">
                     <v-card>
                       <v-card-text class="text-title">
                         آيا مایل به خروج از آسیاسلامت هستید؟
@@ -47,17 +45,15 @@
                       </v-card-actions>
                     </v-card>
                   </v-row>
-                  </v-dialog>
-               
+                </v-dialog>
               </v-col>
             </v-row>
           </v-app-bar>
-
           <v-main class="main">
             <slot />
             <MainNavigationNav v-if="!xlAndUp" :mobile="!xlAndUp" />
           </v-main>
-        </v-layout>
+      
       </v-card>
     </VApp>
   </div>
@@ -69,21 +65,28 @@ import { useAuthentication } from "~/store/auth";
 export default {
   setup() {
     const store = useAuthentication();
-    const cookie = useCookie("userToken");
+    const tokenCookie = useCookie("userToken");
+    const idCookie = useCookie("userId");
     const router = useRouter();
     const drawer = ref(false);
     const dialog = ref(false);
     const { xlAndUp } = useDisplay();
     const logoutHandler = () => {
-      cookie.value = null;
+      tokenCookie.value = null;
+      idCookie.value = null;
       store.accessToken = null;
+      store.userId = null;
       localStorage.clear();
       router.push("/");
     };
+    const openMsg=()=>{
+      router.push('/messages')
+    }
     return {
       drawer,
       dialog,
       logo,
+      openMsg,
       xlAndUp,
       logoutHandler,
     };
@@ -93,7 +96,7 @@ export default {
 <style>
 .app-bar {
   .v-toolbar__content {
-    height: 85px !important;
+    height: 65px !important;
   }
   .v-badge--dot .v-badge__badge {
     width: 11px !important;
@@ -103,7 +106,7 @@ export default {
     z-index: 1;
   }
   .main {
-    min-height: 100vh !important;
+    height: 94vh;
     display: flex;
     flex-direction: column;
   }

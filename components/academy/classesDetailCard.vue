@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters class="my-4">
-    <v-col cols="12" class="text-right text-title font-weight-bold">
+    <v-col cols="12" lg="10" md="9" xl="11" class="text-right text-title ">
       <v-row no-gutters class="my-4">
         <v-col cols="11">
           <p>
@@ -41,7 +41,7 @@
         </v-col>
       </v-row>
       <v-col cols="12 my-5"
-        ><p class="text-title text-center font-weight-bold">شرایط پرداخت</p></v-col
+        ><p class="text-title text-center ">شرایط پرداخت</p></v-col
       >
       <v-row no-gutters class="my-4">
         <v-col cols="11">

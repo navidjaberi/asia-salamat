@@ -16,7 +16,7 @@
                   cols="12"
                   class="d-flex justify-center flex-column align-center mx-auto bg-teal-lighten-5 rounded-lg mt-3 px-3"
                 >
-                  <p class="text-right font-weight-bold text">
+                  <p class="text-right  text">
                     {{ i.Content }}
                   </p>
                   <p class="text text-grey-darken-1">{{ getMessageTime(i.UpdatedAt) }}</p>
@@ -42,9 +42,11 @@ export default {
     const router = useRouter();
     const store = useGetUserInfo();
     const messages = ref([]);
+    //header back button
     const routBackHandler = () => {
       router.push("/messages");
     };
+    //get the messages time and convert it to a readable format
     const getMessageTime = (i) => {
       const dateObject = new Date(i);
       const hours = dateObject.getHours();
@@ -52,12 +54,11 @@ export default {
       const formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
       return formattedTime;
     };
+
     onMounted(() => {
         if(props.msgKey==='myMsg'){
             messages.value = store.getUserMessages;
         }
-
-     
     });
     return {
       routBackHandler,

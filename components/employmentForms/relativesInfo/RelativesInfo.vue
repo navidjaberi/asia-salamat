@@ -7,14 +7,15 @@
         @baseRouteBackHandler="routBackHandler"
         @baseSubmit="submit"
       >
-        <v-row no-gutters>
+        <BaseLoadingAndError :loading="loading" :error="postError" :postData="true" class="mb-3" />
+        <v-row no-gutters style="direction: rtl">
           <v-col xxl="5" xl="6" lg="7" md="8" cols="12" class="pa-0 mx-auto">
-            <p class="text-right" style="font-weight: bold; font-size: 0.8rem">
-              :لطفا سه نفر را معرفی بفرمایید که شما را میشناسند
+            <p class="text-right  text-title" >
+              لطفا سه نفر را معرفی بفرمایید که شما را میشناسند:
             </p>
             <v-row>
               <v-col cols="12" v-for="(item, index) in inputFields" class="pa-0" :key="item.id"
-                ><v-row style="margin: 0px" v-if="item.id === 'firstRelative'">
+                ><v-row no-gutters v-if="item.id === 'firstRelative'">
                   <v-col
                     v-for="(input, inputIndex) in item.inputs"
                     cols="6"
@@ -30,7 +31,7 @@
                         input.notRequired
                           ? undefined
                           : input.type === 'num'
-                          ? rules.num
+                          ? rules.Num
                           : rules.text
                       "
                       :model-value="allRelativesInfo.firstRelative[input.id]"
@@ -44,7 +45,7 @@
                     color="teal-accent-4"
                   ></v-divider>
                 </v-row>
-                <v-row style="margin: 0px" v-if="item.id === 'secondRelative'">
+                <v-row no-gutters v-if="item.id === 'secondRelative'">
                   <v-col
                     v-for="(input, inputIndex) in item.inputs"
                     cols="6"
@@ -60,7 +61,7 @@
                         input.notRequired
                           ? undefined
                           : input.type === 'num'
-                          ? rules.num
+                          ? rules.Num
                           : rules.text
                       "
                       :model-value="allRelativesInfo.secondRelative[input.id]"
@@ -74,7 +75,7 @@
                     color="teal-accent-4"
                   ></v-divider>
                 </v-row>
-                <v-row style="margin: 0px" v-if="item.id === 'thirdRelative'">
+                <v-row no-gutters v-if="item.id === 'thirdRelative'">
                   <v-col
                     v-for="(input, inputIndex) in item.inputs"
                     cols="6"
@@ -90,7 +91,7 @@
                         input.notRequired
                           ? undefined
                           : input.type === 'num'
-                          ? rules.num
+                          ? rules.Num
                           : rules.text
                       "
                       :model-value="allRelativesInfo.thirdRelative[input.id]"
@@ -104,7 +105,7 @@
                     color="teal-accent-4"
                   ></v-divider>
                 </v-row>
-                <v-row style="margin: 0px" v-if="item.id === 'family'">
+                <v-row no-gutters v-if="item.id === 'family'">
                   <v-col
                     v-for="(input, inputIndex) in item.inputs"
                     cols="12"
@@ -120,10 +121,10 @@
                         input.notRequired
                           ? undefined
                           : input.type === 'num'
-                          ? rules.num
+                          ? rules.Num
                           : rules.text
                       "
-                      :model-value="allInfo.family[input.id]"
+                      :model-value="allInfo.nurseOtherInfo[input.id]"
                       @update:model-value="updateFormData(input.id, $event, item.id)"
                     >
                     </v-text-field>
@@ -136,13 +137,13 @@
                 </v-row>
               </v-col>
               <v-col>
-                <p class="text-right" style="font-weight: bold; font-size: 0.8rem">
+                <p class="text-right  text-title">
                   در صورت مشغول به کار شدن کدام یک از موارد را جهت ضمانت میتوانید نزد شرکت قرار
                   دهید؟
                 </p>
               </v-col>
               <v-col cols="12" class="pa-0">
-                <v-radio-group v-model="allInfo.guarantee">
+                <v-radio-group v-model="allInfo.Guarantee">
                   <v-radio
                     label="(به مبلغ ۵۰ میلیون تومان)سفته"
                     color="teal-accent-4"
@@ -175,7 +176,6 @@
               </v-col>
               <p class="error" v-if="error">یک گزینه را انتخاب کنید</p>
             </v-row>
-      
           </v-col>
         </v-row>
       </GlobalPageBaseLayout>
@@ -184,17 +184,13 @@
 </template>
 <script>
 import formInputs from "./formInputs.ts";
-import { jsPDF } from "jspdf";
-import account from "~/assets/img/pics/account.jpg";
-import stamp from "~/assets/img/pics/stamp.png";
-import { AmiriRegular } from "~/assets/fonts/amiri-font";
-import { useNurseInfoStore } from "~/store/nurseInfo";
-
-export default {
+export default  {
   setup() {
     const inputFields = ref(formInputs);
     const router = useRouter();
-    const store = useNurseInfoStore();
+    const nurseId = ref(localStorage.getItem("nurseId"));
+    const postError = ref(false);
+    const loading = ref(false);
     const allRelativesInfo = ref({
       firstRelative: {},
       secondRelative: {},
@@ -202,22 +198,13 @@ export default {
     });
     const allInfo = ref({
       nurseFamily: allRelativesInfo.value,
-      guarantee: "",
-      family: {},
+      Guarantee: "",
+      nurseOtherInfo: {},
     });
     const error = ref(false);
-    const picture = ref(localStorage.getItem("picture"));
-    const toFarsiNumber = (n) => {
-      const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-      return n
-        .toString()
-        .split("")
-        .map((x) => farsiDigits[x])
-        .join("");
-    };
-
+    //check if any checkboxes left empty for error
     const checkboxRules = computed(() => {
-      if (allInfo.value.guarantee === "") {
+      if (allInfo.value.Guarantee === "") {
         error.value = true;
         return true;
       } else {
@@ -225,21 +212,26 @@ export default {
         return false;
       }
     });
-
+    //inputs validation
     const rules = ref({
       text: [
         (value) => {
-          if (value) return true;
+          if (/[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF]$/.test(value)) return true;
           return "فیلد اجباری را پر کنید";
         },
       ],
-      num: [
+      Num: [
         (value) => {
-          if (value?.length === 11 && /[0-9-]+/.test(value) && /^09\d{9}$/.test(value)) return true;
-          return "شماره تلفن را به درستی وارد کنید(از اعداد انگلیسی استفاده کنید)";
+          if (
+            (value?.length === 11 && /[0-9-]+/.test(value) && /^09\d{9}$/.test(value)) ||
+            (/[۰-۹-]+/.test(value) && /^۰۹[۰-۹]{9}$/.test(value))
+          )
+            return true;
+          return "شماره تلفن را به درستی وارد کنید";
         },
       ],
     });
+    //make an object of input's name as key and v-model's value as the object value
     const updateFormData = (name, value, id) => {
       if (id === "firstRelative") {
         allRelativesInfo.value.firstRelative = {
@@ -258,125 +250,67 @@ export default {
         };
       }
       if (id === "family") {
-        allInfo.value.family = { ...allInfo.value.family, [name]: value };
+        allInfo.value.nurseOtherInfo = { ...allInfo.value.nurseOtherInfo, [name]: value };
       }
     };
-    const createImg=(file)=>{
-      const reader = new FileReader();
-       reader.onload = (event) => {
-          img.value=event.target.result
-         
+    //make a request for posting data and another request for posting pdf and forward form to next step
+    const postRelativesData = async (allInfo) => {
+      try {
+        const data = await useMyFetch("/Nurse/family", loading, postError, "put", "", allInfo);
+      
+        if (data) {
+          localStorage.setItem("nurseEmploymentId", data.Id);
+          router.push("/employment/terms");
+          const [generatedPdf] = useMakePdf(); //get the pdf
+          const formData = new FormData();
+          formData.append("nurseId", nurseId.value);
+          formData.append("pdf", generatedPdf);
+          try {
+            const data = await useMyFetch("/Nurse/pdf", loading, postError, "post", "", formData);
+            console.log(data);
+          } catch (e) {
+            console.error("Error fetching data:", error);
+          }
         }
-        reader.readAsDataURL(file);
-    }
-    const submit = async (valid) => {
-      if (!checkboxRules.value && valid) {
-        localStorage.setItem("relativesInfo", JSON.stringify(allInfo.value));
-        router.push("/employment/terms");
-        const localStoragePdfData = localStorage.getItem("employmentPersonalInfo");
-        const pdfData = JSON.parse(localStoragePdfData);
-        let today = new Date().toLocaleDateString("fa-IR");
-        let randomNum = Math.floor(1000 + Math.random() * 9000);
-        const randomFarsiNum = toFarsiNumber(randomNum);
-        const doc = new jsPDF({
-          orientation: "portrait",
-          unit: "in",
-          format: "a3",
-        });
-        doc.addFileToVFS("Amiri-Regular.ttf", AmiriRegular);
-        doc.addFont("Amiri-Regular.ttf", "Amiri", "normal");
-        doc.setFont("Amiri"); // set font
-        doc.setFontSize(30);
-        doc.text("بسمه تعالی", 6, 1, { align: "right", lang: "ar" });
-        doc.setFontSize(19);
-        doc.text(today + ":تاریخ", 2, 1.5, { align: "right", lang: "ar" });
-        doc.text(randomFarsiNum + ":شماره", 2, 1, { align: "right", lang: "ar" });
-        doc.text(".........:پیوست", 2, 2, { align: "right", lang: "ar" });
-        doc.addImage(img.value ?  img.value : account, "JPEG", 9, 1, 2.5, 3, "FAST");
-        doc.addImage(stamp, "PNG", 9, 3.7, 2.5, 0.8);
-        doc.setFontSize(30);
-        doc.text("سرپرست محترم تشخیص هویت", 11.2, 5.2, { align: "right", lang: "ar" });
-        doc.setFontSize(22);
-        doc.text("باسلام", 11.2, 6, { align: "right", lang: "ar" });
-        doc.text(
-          `احتراما شرکت آسیا سلامت اندیشان البرز خانم/آقا ${pdfData.name} فرزند ${pdfData.fatherName} `,
-          11.2,
-          6.8,
-          { align: "right", lang: "ar" }
-        );
-        doc.text(
-          ` متولد ${pdfData.birthday} به شماره شناسنامه ${pdfData.nationalNumber} و کد ملی ${pdfData.nationalCode}`,
-          11.2,
-          7.6,
-          { align: "right", lang: "ar" }
-        );
-        doc.text(`.را جهت تایید عدم سابقه کیفری به حضورتان معرفی میگردد `, 11.2, 8.4, {
-          align: "right",
-          lang: "ar",
-        });
-        doc.setFontSize(19);
-        doc.text(
-          `کرج ،رجایی شهر ، خیابان آزادی ، نبش ۶ شرقی ، فاز  ۱ ، پلاک ۱۸۶ ، واحد ۱`,
-          11.2,
-          10,
-          { align: "right", lang: "ar" }
-        );
-        doc.text(`۳۱۴۶۹۸۳۳۵۳:کدپستی`, 11.2, 10.9, { align: "right", lang: "ar" });
-        doc.text(`با تشکر`, 2, 14, { align: "right", lang: "ar" });
-        doc.addPage();
-        doc.setFontSize(30);
-        doc.text("بسمه تعالی", 6, 1, { align: "right", lang: "ar" });
-        doc.setFontSize(19);
-        doc.text(today + ":تاریخ", 2, 1.5, { align: "right", lang: "ar" });
-        doc.text(randomFarsiNum + ":شماره", 2, 1, { align: "right", lang: "ar" });
-        doc.text(".........:پیوست", 2, 2, { align: "right", lang: "ar" });
-        doc.addImage(picture.value ? picture.value : account, "JPEG", 9, 1, 2.5, 3, "FAST");
-        doc.addImage(stamp, "PNG", 9, 3.7, 2.5, 0.8);
-        doc.setFontSize(30);
-        doc.text("سرپرست محترم آزمایشگاه", 11.2, 5.2, { align: "right", lang: "ar" });
-        doc.setFontSize(22);
-        doc.text("باسلام", 11.2, 6, { align: "right", lang: "ar" });
-        doc.text(
-          `احتراما شرکت آسیا سلامت اندیشان البرز خانم/آقا ${pdfData.name} فرزند ${pdfData.fatherName} `,
-          11.2,
-          6.8,
-          { align: "right", lang: "ar" }
-        );
-        doc.text(
-          ` متولد ${pdfData.birthday} به شماره شناسنامه ${pdfData.nationalNumber} و کد ملی ${pdfData.nationalNumber}`,
-          11.2,
-          7.6,
-          { align: "right", lang: "ar" }
-        );
-        doc.text(`.را جهت انجام آزمایش عدم اعتیاد به حضورتان معرفی میگردد `, 11.2, 8.4, {
-          align: "right",
-          lang: "ar",
-        });
-        doc.setFontSize(19);
-        doc.text(
-          `کرج ،رجایی شهر ، خیابان آزادی ، نبش ۶ شرقی ، فاز  ۱ ، پلاک ۱۸۶ ، واحد ۱`,
-          11.2,
-          10,
-          { align: "right", lang: "ar" }
-        );
-        doc.text(`۳۱۴۶۹۸۳۳۵۳:کدپستی`, 11.2, 10.9, { align: "right", lang: "ar" });
-        doc.text(`با تشکر`, 2, 14, { align: "right", lang: "ar" });
-        const dataUri = doc.output("datauristring");
-        doc.save(`${pdfData.nationalCode}.pdf`);
-        const newWindow = window.open();
-        newWindow.document.write(
-          '<iframe width="100%" height="100%" src="' + dataUri + '"></iframe>'
-        );
+      } catch (error) {
+        error.value = true;
+        console.error("Error fetching data:", error);
       }
     };
+    //check the input's validation to make the final object and post it and store it in local storage
+    const submit = (valid) => {
+      postError.value = false;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      localStorage.setItem("relativesInfo", JSON.stringify(allInfo.value));
+      const relativesToArray = Object.values(allRelativesInfo.value).map((relatives) => ({
+        information: relatives.information,
+        knowTime: relatives.knowTime,
+        name: relatives.name,
+        phoneNumber: relatives.phoneNumber,
+      }));
+      const allInfoPost = {
+        ...allInfo.value,
+        nurseFamily: relativesToArray,
+        nurseId: nurseId.value,
+      };
+      if (!checkboxRules.value && valid) {
+        postRelativesData(allInfoPost);
+      }
+    };
+    //form backward button
     const routBackHandler = () => {
       router.push("/employment/upload-image");
     };
-    onMounted(() => {
+    //check if local storage has item
+    const getItemFromLocalStorage = () => {
       if (localStorage.getItem("relativesInfo")) {
         allInfo.value = JSON.parse(localStorage.getItem("relativesInfo"));
         allRelativesInfo.value = allInfo.value.nurseFamily;
       }
+    };
+
+    onMounted(() => {
+      getItemFromLocalStorage();
     });
     return {
       inputFields,
@@ -385,8 +319,10 @@ export default {
       routBackHandler,
       error,
       updateFormData,
-       allRelativesInfo,
+      allRelativesInfo,
       allInfo,
+      loading,
+      postError,
     };
   },
 };

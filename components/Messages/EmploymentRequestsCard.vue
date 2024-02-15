@@ -7,7 +7,7 @@
   >
     <v-row>
       <v-col cols="12" class="text-center">
-        <p class="text-title font-weight-bold">{{ name }} :نام</p>
+        <p class="text-title ">{{ name }} :نام</p>
         <v-col>
           <v-chip
             v-for="i in shifts"
@@ -19,7 +19,7 @@
           >
             {{ i }}
           </v-chip>
-          <p class="text-title font-weight-bold">{{ getDate }}:تاریخ درخواست</p>
+          <p class="text-title ">{{ getDate }}:تاریخ درخواست</p>
         </v-col>
 
         <v-chip
@@ -57,6 +57,7 @@ export default {
     },
   },
   setup(props) {
+    //get the request status and convert it in readable format
     const getStatus = computed(() => {
       if (props.status === 0) {
         return { text: "تایید شده", color: "green" };
@@ -68,7 +69,7 @@ export default {
         return { text: "در حال بررسی", color: "grey-darken-1" };
       }
     });
-
+//get the request data and convert it to readable persian data
     const getDate = computed(() => {
       let d = new Date(props.date).toLocaleDateString("fa-IR");
       return d;

@@ -2,28 +2,28 @@ const formInputs = [
   {
     id:'firstRelative',
     inputs: [
-      { title: "نسبت", value: "", id: "information" },
       { title: "آقا/خانم", value: "", id: "name" },
-      { title: "مدت آشنایی", value: "", id: "knowTime" },
+      { title: "نسبت", value: "", id: "information" },
       { title: "شماره تماس", value: "", type: "num", id: "phoneNumber" },
+      { title: "مدت آشنایی", value: "", id: "knowTime" },
     ],
   },
   {
     id:'secondRelative',
     inputs: [
-      { title: "نسبت", value: "", id: "information" },
       { title: "آقا/خانم", value: "", id: "name" },
-      { title: "مدت آشنایی", value: "", id: "knowTime" },
+      { title: "نسبت", value: "", id: "information" },
       { title: "شماره تماس", value: "", type: "num", id: "phoneNumber" },
+      { title: "مدت آشنایی", value: "", id: "knowTime" },
     ],
   },
   {
     id:'thirdRelative',
     inputs: [
-      { title: "نسبت", value: "", id: "information" },
       { title: "آقا/خانم", value: "", id: "name" },
-      { title: "مدت آشنایی", value: "", id: "knowTime" },
+      { title: "نسبت", value: "", id: "information" },
       { title: "شماره تماس", value: "", type: "num", id: "phoneNumber" },
+      { title: "مدت آشنایی", value: "", id: "knowTime" },
     ],
   },
   {

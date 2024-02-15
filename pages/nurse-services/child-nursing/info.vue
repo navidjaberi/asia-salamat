@@ -1,5 +1,5 @@
 <template>
-    <NurseServicesBasePersonalInfo mode="child" />
+    <NurseServicesBasePersonalInfo mode="Kid" />
   </template>
   <script>
 

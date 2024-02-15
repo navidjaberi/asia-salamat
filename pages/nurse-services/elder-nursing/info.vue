@@ -1,5 +1,5 @@
 <template>
-    <NurseServicesBasePersonalInfo mode="elder" />
+    <NurseServicesBasePersonalInfo mode="OldAge" />
   </template>
   <script>
 

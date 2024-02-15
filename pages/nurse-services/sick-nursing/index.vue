@@ -1,5 +1,5 @@
 <template>
-  <NurseServicesBaseForm mode="sick" title="پرستاری بیمار" countTitle="تعداد بیمار" ageTitle="سن بیمار"/>
+  <NurseServicesBaseForm mode="Patient" title="پرستاری بیمار" countTitle="تعداد بیمار" ageTitle="سن بیمار"/>
 </template>
 <script>
 

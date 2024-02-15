@@ -1,5 +1,5 @@
 <template>
-  <v-layout>
+
     <v-row class="navigation" :class="{ 'navigation-mobile':mobile }">
       <v-col>
         <v-tabs
@@ -19,7 +19,7 @@
         </v-tabs>
       </v-col>
     </v-row>
-  </v-layout>
+
 </template>
 <script>
 export default {

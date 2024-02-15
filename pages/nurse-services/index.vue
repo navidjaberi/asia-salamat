@@ -20,7 +20,7 @@
                     </v-row>
                   </template>
                 </v-img>
-                <p class="text-center font-weight-bold my-3">
+                <p class="text-center  text-title my-3">
                   {{ i.title }}
                 </p>
               </v-card>

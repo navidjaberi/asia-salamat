@@ -9,15 +9,16 @@
   .form-control {
     border: none;
     border-bottom: 1px solid rgb(133, 133, 133);
-    color: rgb(95, 95, 95);
-    font-size: 0.8rem;
-    font-weight: bold;
+    color: rgb(70, 70, 70);
+    font-size: 0.6rem;
   }
   .date-picker {
+    font-size: 0.8rem !important;
+ 
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 18px;
+    padding-bottom: 0.8rem;
     padding-top: 10px;
     padding-left: 0px;
   }
@@ -25,14 +26,14 @@
     width: 100%;
     max-width: 100%;
     margin-right: 8px;
+
   }
   .v-field-label,
   .v-label,
   .v-field-label--floating,
   .v-field-label {
-    font-weight: bold !important;
     right: 10px !important;
-    font-size: 0.8rem !important;
+    font-size: 0.6rem !important;
   }
   input {
     text-align: right !important;
@@ -43,21 +44,24 @@
   }
   .v-chip {
     border-radius: 5px !important;
-    font-size: 0.6rem !important;
+    font-size: 0.5rem !important;
     text-align: center !important;
     margin: 0px !important;
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 20px 0px!important;
+    padding: 20px 0px !important;
+    font-family: "sans";
   }
   .birthday-error {
     justify-content: end !important;
     color: red;
-    margin-top: -20px;
+    margin-top: -14px;
+    font-size: 0.5rem;
+    font-weight: 600!important;
+    font-family: "sans";
     hyphens: none !important;
     text-align: right !important;
-    font-size: 0.6rem !important;
   }
   .v-auto-complete--menu-active {
     text-align: right !important;
@@ -65,9 +69,9 @@
   .v-field__input {
     text-align: right !important;
     display: flex;
-    font-size: 0.8rem;
+    font-size: 0.6rem;
+    justify-content: right!important;
   }
-
   .v-counter {
     display: none;
   }

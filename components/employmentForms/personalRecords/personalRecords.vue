@@ -21,7 +21,7 @@
                 ></v-select>
               </v-col>
               <v-col cols="9" class="d-flex align-center justify-end text-right">
-                <p style="font-weight: bold; font-size: 0.8rem">{{ i.title }}</p>
+                <p class="text-title">{{ i.title }}</p>
               </v-col>
               <v-divider></v-divider>
             </v-row>
@@ -40,6 +40,7 @@ export default {
     const router = useRouter();
     const store = useNurseInfoStore();
     const trueItemsArray = ref([]);
+    //make a default value for all inputs
     const formData = ref({
       Drug: "خیر",
       Smoke: "خیر",
@@ -50,13 +51,15 @@ export default {
       Family: "خیر",
       SpecializedDegree: "خیر",
     });
-    const updateValues=(formData, keysArray)=> {
-  for (const key in formData) {
-    if (keysArray.includes(key)) {
-      formData[key] = "بله";
-    }
-  }
-}
+    //update the value of checkboxes
+    const updateValues = (formData, keysArray) => {
+      for (const key in formData) {
+        if (keysArray.includes(key)) {
+          formData[key] = "بله";
+        }
+      }
+    };
+    //function for store true inputs in an object with input's name as key
     const updateFormData = (name, value) => {
       formData.value = { ...formData.value, [name]: value };
     };
@@ -69,22 +72,26 @@ export default {
       }
       return keysWithValueTrue;
     };
-
+    //store true items in store and local storage and forward form to next step
     const submit = () => {
       trueItemsArray.value = storeTrueItems(formData.value);
       localStorage.setItem("personalRecords", JSON.stringify(trueItemsArray.value));
       store.info.otherProps = trueItemsArray.value;
       router.push("/employment/collaboration-terms");
     };
+    //form backward button
     const routBackHandler = () => {
       router.push("/employment/personal-info");
     };
-    onMounted(() => {
+    //check if local storage has item
+    const getLocalStorageItems = () => {
       if (localStorage.getItem("personalRecords")) {
         trueItemsArray.value = JSON.parse(localStorage.getItem("personalRecords"));
-        updateValues(formData.value,trueItemsArray.value)
-      
+        updateValues(formData.value, trueItemsArray.value);
       }
+    };
+    onMounted(() => {
+      getLocalStorageItems();
     });
     return { recordInfo, submit, routBackHandler, updateFormData, formData };
   },

@@ -11,7 +11,10 @@
           :loading="loading"
           :error="error"
           v-if="error || loading"
+          :postData="false"
+          @reload="reloadHandler"
         />
+    
         <v-row no-gutters>
           <v-col xxl="5" xl="6" lg="7" md="8" cols="12" class="mx-auto">
             <v-row no-gutters>
@@ -24,8 +27,8 @@
                 >
                   <NuxtLink :to="i.link">
                     <p
-                      class="text-right text-teal-accent-4 font-weight-bold"
-                      style="font-size: 0.8rem"
+                      class="text-right text-teal-accent-4 "
+                      style="font-size: 0.6rem"
                     >
                       {{ i.title }}
                     </p>
@@ -62,14 +65,23 @@ export default {
         link: "messages/my-messages",
       },
     ]);
+    const getMsgData = () => {
+      store.getUserInfo(loading, error);
+    };
     watch(messages, () => {
       requests.value[2].amount = store.getUserMessages.length;
     });
     const routBackHandler = () => {
       router.push("/home");
     };
+    const reloadHandler = () => {
+      error.value=false
+      loading.value=false
+      getMsgData();
+    };
+
     onMounted(() => {
-      store.getUserInfo(loading, error);
+      getMsgData();
     });
     return {
       requests,
@@ -77,6 +89,7 @@ export default {
       messages,
       loading,
       error,
+      reloadHandler,
     };
   },
 };

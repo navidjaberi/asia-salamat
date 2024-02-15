@@ -20,7 +20,7 @@
                 ></v-select
               ></v-col>
               <v-col cols="8" class="d-flex align-center justify-end text-right px-5">
-                <p class="text">{{ countTitle }}</p>
+                <p class="text-title">{{ countTitle }}</p>
               </v-col>
               <v-divider
                 :thickness="1"
@@ -31,28 +31,23 @@
             <v-row>
               <v-col cols="8">
                 <v-radio-group v-model="formData.gender" class="d-flex" inline>
+                  <v-radio label="هردو" color="teal-accent-4" value="Both" hide-details></v-radio>
                   <v-radio
-                    label="هردو"
+                    :label="mode === 'Kid' ? 'دختر' : 'خانم'"
                     color="teal-accent-4"
-                    value="partTime"
+                    value="Female"
                     hide-details
                   ></v-radio>
                   <v-radio
-                    :label="mode === 'child' ? 'دختر' : 'خانم'"
+                    :label="mode === 'Kid' ? 'پسر' : 'آقا'"
                     color="teal-accent-4"
-                    value="girl"
-                    hide-details
-                  ></v-radio>
-                  <v-radio
-                    :label="mode === 'child' ? 'پسر' : 'آقا'"
-                    color="teal-accent-4"
-                    value="boy"
+                    value="Male"
                     hide-details
                   ></v-radio>
                 </v-radio-group>
               </v-col>
               <v-col cols="4" class="d-flex align-center justify-end text-right px-5">
-                <p class="text">جنسیت</p>
+                <p class="text-title">جنسیت</p>
               </v-col>
               <v-divider
                 :thickness="1"
@@ -72,7 +67,7 @@
                   @update:model-value="updateAgeData(field.id, $event)"
               /></v-col>
               <v-col cols="8" class="d-flex align-center justify-end text-right px-5">
-                <p class="text">
+                <p class="text-title">
                   <span v-if="index > 0">{{ index + 1 }}</span> {{ ageTitle }}
                 </p>
               </v-col>
@@ -82,15 +77,15 @@
                 color="teal-accent-4"
               ></v-divider>
             </v-row>
-            <v-row v-if="mode === 'elder'">
+            <v-row v-if="mode === 'OldAge'">
               <v-col cols="12" class="text-right"
-                ><p class="text">سالمند شما کدام یک از موارد زیر را دارا میباشد؟</p></v-col
+                ><p class="text-title">سالمند شما کدام یک از موارد زیر را دارا میباشد؟</p></v-col
               >
               <v-col cols="12" class="d-flex flex-wrap justify-center elder-checkbox">
                 <v-checkbox
                   label="پوشک"
                   color="teal-accent-4"
-                  value="diaper"
+                  value="Diaper"
                   hide-details
                   inline
                   v-model="formData.problems"
@@ -99,16 +94,7 @@
                 <v-checkbox
                   label="لگن"
                   color="teal-accent-4"
-                  value="basin"
-                  hide-details
-                  inline
-                  v-model="formData.problems"
-                  @change="elderCareUpdate"
-                ></v-checkbox>
-                <v-checkbox
-                  label="سون"
-                  color="teal-accent-4"
-                  value="son"
+                  value="Bedpan"
                   hide-details
                   inline
                   v-model="formData.problems"
@@ -117,7 +103,16 @@
                 <v-checkbox
                   label="آلزایمر"
                   color="teal-accent-4"
-                  value="alzaymer"
+                  value="Alzheimer"
+                  hide-details
+                  inline
+                  v-model="formData.problems"
+                  @change="elderCareUpdate"
+                ></v-checkbox>
+                <v-checkbox
+                  label="پارکینسون"
+                  color="teal-accent-4"
+                  value="Parkinson"
                   hide-details
                   inline
                   v-model="formData.problems"
@@ -132,15 +127,6 @@
                   @click="elderCareSelectNone"
                 ></v-checkbox>
                 <v-checkbox
-                  label="پارکینسون"
-                  color="teal-accent-4"
-                  value="parkingson"
-                  hide-details
-                  inline
-                  v-model="formData.problems"
-                  @change="elderCareUpdate"
-                ></v-checkbox>
-                <v-checkbox
                   label="ام اس"
                   color="teal-accent-4"
                   value="MS"
@@ -149,6 +135,7 @@
                   v-model="formData.problems"
                   @change="elderCareUpdate"
                 ></v-checkbox>
+                
               </v-col>
               <v-divider
                 :thickness="1"
@@ -158,55 +145,57 @@
             </v-row>
             <v-row>
               <v-col cols="9">
-                <v-radio-group v-model="formData.shifts" class="d-flex" inline>
+                <v-radio-group v-model="formData.shift" class="d-flex" inline>
                   <v-radio
                     label="شبانه"
                     color="teal-accent-4"
-                    value="night"
+                    value="Night"
                     hide-details
                     class="w-50"
                   ></v-radio>
                   <v-radio
                     label="روزانه"
                     color="teal-accent-4"
-                    value="day"
+                    value="Day"
                     hide-details
                     class="w-50"
                   ></v-radio>
                   <v-radio
                     label="شبانه روزی"
                     color="teal-accent-4"
-                    value="fullDay"
+                    value="Boarding"
                     hide-details
                     class="w-50"
                   ></v-radio>
                   <v-radio
                     label="مقطعی"
                     color="teal-accent-4"
-                    value="partTime"
+                    value="Hour"
                     hide-details
                     class="w-50"
                   ></v-radio>
                 </v-radio-group>
               </v-col>
               <v-col cols="3" class="d-flex align-center justify-end text-right px-5">
-                <p class="text">شیفت کاری</p>
+                <p class="text-title">شیفت کاری</p>
               </v-col>
               <v-col class="d-flex flex-row-reverse align-center" v-if="!hideShiftHours">
-                <v-col cols="4" class="text-right"> <p class="text">ساعت کاری از</p></v-col>
-                <v-col cols="4">
+                <v-col cols="4" class="text-right"> <p class="text-title">ساعت کاری از</p></v-col>
+                <v-col cols="4" >
                   <v-text-field
+                  placeholder="۹ صبح"
                     variant="underlined"
                     color="teal-accent-4"
-                    v-model="formData.shiftStart"
+                    v-model="formData.from"
                     :rules="rules.text"
                 /></v-col>
                 <span class="text">تا</span>
                 <v-col cols="4">
                   <v-text-field
+                  placeholder="۶ بعدازظهر"
                     variant="underlined"
                     color="teal-accent-4"
-                    v-model="formData.shiftEnd"
+                    v-model="formData.to"
                     :rules="rules.text"
                 /></v-col>
               </v-col>
@@ -227,7 +216,7 @@
                 />
               </v-col>
               <v-col cols="9" class="d-flex align-center justify-end text-right px-5">
-                <p class="text">در طول مدت فعالیت نیروی اعزامی چه شخصی داخل منزل حضور دارد؟</p>
+                <p class="text-title">در طول مدت فعالیت نیروی اعزامی چه شخصی داخل منزل حضور دارد؟</p>
               </v-col>
               <v-divider
                 :thickness="1"
@@ -245,7 +234,7 @@
                 ></v-select>
               </v-col>
               <v-col cols="9" class="d-flex align-center justify-end text-right px-5">
-                <p class="text">آیا در محل نیروی اعزامی دوربین مداربسته وجود دارد؟</p>
+                <p class="text-title">آیا در محل نیروی اعزامی دوربین مداربسته وجود دارد؟</p>
               </v-col>
               <v-divider
                 :thickness="1"
@@ -255,16 +244,16 @@
             </v-row>
             <v-row class="personal-info mt-3">
               <v-col cols="12">
-                <p class="text-center text">محدوده محل سکونت</p>
+                <p class="text-center text-title">محدوده محل سکونت</p>
                 <v-autocomplete
                   label="استان"
                   :items="states"
                   variant="underlined"
                   color="teal-accent-4"
-                  class="align px-3"
+                  class="align px-3" 
                   :rules="rules.stateSelect"
                   menu-icon=""
-                  v-model="formData.state"
+                  v-model="formData.province"
                   :counter="false"
                 >
                   <template v-slot:append>
@@ -275,7 +264,7 @@
                 >
                 <v-autocomplete
                   label="شهر"
-                  :items="getCitiesByStates(formData.state)"
+                  :items="getCitiesByStates(formData.province)"
                   variant="underlined"
                   color="teal-accent-4"
                   class="align px-3"
@@ -297,9 +286,10 @@
                   :rules="rules.text"
                   class="py-2 px-3"
                   v-model="formData.neighborhood"
+             
                 >
                   <template v-slot:error>
-                    <p class="text-teal-accent-4"></p>
+                    <p class="text-teal-accent-4 text-title"></p>
                   </template>
                   <template v-slot:append>
                     <v-icon color="teal-accent-4" class="ml-2" style="opacity: 1"
@@ -357,61 +347,67 @@ export default {
     const cities = ref(cityJson);
     const elderCareNone = ref(null);
     const ageObj = ref({});
-    const shiftsError = ref(true);
+    const shiftError = ref(true);
     const formData = ref({
       count: "1",
-      gender: "boy",
-      age: [],
-      shifts: "day",
+      nurseCategory: props.mode,
+      gender: "Male",
+      ages: [],
+      shift: "Day",
       peopleInHouse: "",
       camera: "خیر",
-      state: null,
+      province: null,
       city: null,
       neighborhood: "",
       description: "",
-      shiftStart: "",
-      shiftEnd: "",
+      from: "",
+      to: "",
       problems: [],
     });
+    //config for state and city selects which bring each state's cities
     const states = ref(Object.keys(cities.value));
     const getCitiesByStates = (states) => {
       return states ? cities.value[states] : [];
     };
+    //get age data and make an array of ages depend of the amount of age's input
     const updateAgeData = (name, value) => {
       ageObj.value = { ...ageObj.value, [name]: value };
       const AgeResultObject = Object.keys(ageObj.value).reduce((accumulator, key) => {
         accumulator[key] = useToEnglishDigits(ageObj.value[key]);
-       
         return accumulator;
       }, {});
-      formData.value.age = Object.values(AgeResultObject).map((value) => parseInt(value, 10));
+      formData.value.ages = Object.values(AgeResultObject).map((value) => parseInt(value, 10));
     };
+    //get the cctv inputs value and convert it to boolean type
     const cctv = computed(() => {
       if (formData.value.camera === "خیر") return false;
       else {
         return true;
       }
     });
+    //generate form ages fields depend on the count of patient
     const generatedTextFields = computed(() => {
       const numFields = parseInt(formData.value.count);
       return Array.from({ length: numFields }, (_, index) => ({ id: index + 1, show: true }));
     });
+    //get each mode localStorage key
     const localKey = computed(() => {
-      if (props.mode === "child") {
+      if (props.mode === "Kid") {
         return "nurseReserveChild";
-      } else if (props.mode === "elder") {
+      } else if (props.mode === "OldAge") {
         return "nurseReserveElder";
-      } else if (props.mode === "sick") {
+      } else if (props.mode === "Patient") {
         return "nurseReserveSick";
       }
     });
+    //check if each mode local storage not exist bring the form default values
     watch(formData, (newState) => {
       if (!localStorage.getItem(localKey.value)) {
         formData.value.city = null;
         elderCareNone.value = true;
       }
     });
-
+    //inputs validations
     const rules = ref({
       text: [
         (value) => {
@@ -427,7 +423,7 @@ export default {
       ],
       stateSelect: [
         () => {
-          if (formData.value.state) return true;
+          if (formData.value.province) return true;
           return "لطفا استان خود را انتخاب کنید";
         },
       ],
@@ -438,6 +434,7 @@ export default {
         },
       ],
     });
+    //handle the none select checkbox for un check all other checkboxes
     const elderCareSelectNone = () => {
       elderCareNone.value = !elderCareNone.value;
       formData.value.problems = [];
@@ -445,6 +442,7 @@ export default {
         formData.value.problems = [];
       }
     };
+    //check if none of checkboxes were selected,check the none checkbox
     const elderCareUpdate = () => {
       if (formData.value.problems === []) {
         elderCareNone.value = true;
@@ -452,40 +450,48 @@ export default {
         elderCareNone.value = false;
       }
     };
+    //check if the boarding shift checkbox was selected hide the shift hour fields
     const hideShiftHours = computed(() => {
-      if (formData.value.shifts === "fullDay") {
+      if (formData.value.shift === "Boarding") {
         return true;
       } else {
         return false;
       }
     });
+    //check if validations are satisfied store the form data in local storage and forward the form to the next step
     const submit = async (valid) => {
+      formData.value.cctv = cctv.value;
       if (valid) {
         localStorage.setItem(localKey.value, JSON.stringify(formData.value));
         router.push(`${routes.fullPath}/info`);
       }
     };
+    //form backward button
     const routBackHandler = () => {
       router.push("/nurse-services");
     };
-    onMounted(() => {
+    //check if any mode's local storage has item and fill the inputs
+    const getItemFromLocalStorage = () => {
       if (localStorage.getItem(localKey.value)) {
         formData.value = JSON.parse(localStorage.getItem(localKey.value));
-        const AgeResultObject = formData.value.age.reduce((accumulator, currentValue, index) => {
+        const AgeResultObject = formData.value.ages.reduce((accumulator, currentValue, index) => {
           accumulator[index + 1] = currentValue.toString();
           return accumulator;
         }, {});
         ageObj.value = AgeResultObject;
-        if (props.mode === "elder") {
+        if (props.mode === "OldAge") {
           if (formData.value.problems.length <= 0) {
             elderCareNone.value = true;
           }
         }
       } else {
-        if (props.mode === "elder") {
+        if (props.mode === "OldAge") {
           elderCareNone.value = true;
         }
       }
+    };
+    onMounted(() => {
+      getItemFromLocalStorage();
     });
     return {
       submit,
@@ -498,7 +504,7 @@ export default {
       elderCareSelectNone,
       elderCareUpdate,
       hideShiftHours,
-      shiftsError,
+      shiftError,
       updateAgeData,
       ageObj,
       generatedTextFields,

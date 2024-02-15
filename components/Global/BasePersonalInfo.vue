@@ -9,7 +9,13 @@
           @baseRouteBackHandler="routBackHandler"
           @baseSubmit="submit"
         >
-          <BasePurchaseModal :dialog="openModal" @update:dialog="updateDialog" />
+          <BaseLoadingAndError :loading="loading" :error="error" class="mb-3" :postData="true" />
+          <BasePurchaseModal
+            :dialog="openModal"
+            @update:dialog="updateDialog"
+            @cashPurchasePay="cashPayment"
+            @installmentPurchasePay="installmentPayment"
+          />
           <v-row>
             <v-col
               xxl="5"
@@ -29,6 +35,7 @@
                 class="align py-2 px-3"
                 :rules="rulesConditions(i)"
                 :model-value="formData[i.id]"
+                :type="i.mode"
                 @update:model-value="updateFormData(i.id, $event)"
                 required
               >
@@ -112,7 +119,7 @@
                   xxl="2"
                   class="pa-0 d-flex align-center justify-end"
                 >
-                  <h6 class="text-right">{{ i.title }}</h6>
+                  <p class="text-right text-title">{{ i.title }}</p>
                 </v-col>
               </v-chip-group>
               <v-autocomplete
@@ -175,20 +182,34 @@ export default {
     routeKeyword: {
       type: String,
       required: false,
+      default: "",
     },
   },
   setup(props) {
     const router = useRouter();
     const routes = useRoute();
+    const loading = ref(false);
+    const error = ref(false);
+    const paymentUrl = ref("");
+    //get the route title for back button and local Storage key in classes mode
     const routeTitle = ref(uesGetRoute(routes.fullPath, props.routeKeyword));
+    //get previous route title for back button
+    const getPreRouteTitle = ref(routeTitle.value.replace("/personal-info", "/details"));
+    //get the local storage key for accessing information
+    const localKey = ref(routeTitle.value.replace("/personal-info", ""));
+    //get local storage items
+    const localItems = ref(localStorage.getItem(localKey.value));
     const store = useNurseInfoStore();
     const inputFields = ref(formInputs);
     const cities = ref(cityJson);
     const date = ref("");
+    const isInstallment = ref(false);
     const formData = ref({});
+    const classData = ref({});
     const openModal = ref(false);
     const birthdayError = ref(false);
     const educationSelect = ref();
+    //make conditions for form's differences in different modes
     const showCondition = (i) => {
       if (props.nurseForm) {
         return i.nurseForm;
@@ -196,6 +217,7 @@ export default {
         return i.academyForm;
       }
     };
+    //make the education options modal value readable
     const educationOptions = computed({
       get: () => {
         if (educationSelect.value === 0) {
@@ -232,6 +254,7 @@ export default {
         }
       },
     });
+    //config for state and city selects which bring each state's cities
     const states = ref(Object.keys(cities.value));
     const getCitiesByStates = (states) => {
       return states ? cities.value[states] : [];
@@ -241,17 +264,22 @@ export default {
     const updateFormData = (name, value) => {
       formData.value = { ...formData.value, [name]: value };
     };
+    //all forms validations rules
     const rules = ref({
       text: [
         (value) => {
-          if (value) return true;
-          return " فیلد اجباری را پر کنید";
+          if (/[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF]$/.test(value)) return true;
+          return "(از کیبورد فارسی استفاده کنید)فیلد اجباری را پر کنید";
         },
       ],
       Num: [
         (value) => {
-          if (value?.length === 11 && /[0-9-]+/.test(value) && /^09\d{9}$/.test(value)) return true;
-          return "شماره تلفن را به درستی وارد کنید(از اعداد انگلیسی استفاده کنید)";
+          if (
+            (value?.length === 11 && /[0-9-]+/.test(value) && /^09\d{9}$/.test(value)) ||
+            (/[۰-۹-]+/.test(value) && /^۰۹[۰-۹]{9}$/.test(value))
+          )
+            return true;
+          return "شماره تلفن را به درستی وارد کنید";
         },
       ],
       nationalCode: [
@@ -285,9 +313,11 @@ export default {
         },
       ],
     });
+    //open the purchase modal for classes form mode
     const updateDialog = (newVal) => {
       openModal.value = newVal;
     };
+    //make rules conditions readable
     const rulesConditions = (i) => {
       if (i.type === "text" && i.required) {
         return rules.value.text;
@@ -301,7 +331,67 @@ export default {
         return rules.value.nationalNumber;
       }
     };
+    //function for posting classes data
+    const postData = async (classesData) => {
+      try {
+        const data = await useMyFetch(
+          "/ClassCategory/Reserve",
+          loading,
+          error,
+          "post",
+          "",
+          classesData
+        );
+        localStorage.removeItem("academyPersonalInfo");
+        if (data) {
+          error.value = false;
+          openModal.value = true;
+          paymentUrl.value = data;
+        }
+      } catch (error) {
+        error.value = true;
+        console.error("Error fetching data:", error);
+      }
+    };
+    // make a request for posting classes data
+    const submitPostingData = () => {
+      classData.value = {
+        isInstallment: isInstallment.value,
+        ...JSON.parse(localItems.value),
+      };
+      postData(classData.value);
+      //a timeout for closing modal and scroll to the top
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 400);
+    };
+    const forwardToPayment = () => {
+      const newTab = window.open("", "_blank");
+      setTimeout(() => {
+        newTab.document.write("درحال انتقال به سایت پذیرنده");
+        newTab.location.href = paymentUrl.value;
+      }, 800);
+      if (newTab == null) {
+        error.value = true;
+      } else {
+        setTimeout(() => {
+          router.push("/support-contact");
+        }, 2000);
+      }
+    };
+    //post classes data as installment payment
+    const installmentPayment = () => {
+      isInstallment.value = true;
+      forwardToPayment();
+    };
+    //post classes data as cash payment
+    const cashPayment = async () => {
+      isInstallment.value = false;
+      forwardToPayment();
+    };
+    //function for next button in the forms and store data in local storage
     const submit = async (valid) => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
       if (!date.value) {
         birthdayError.value = true;
       }
@@ -310,42 +400,57 @@ export default {
           ...formData.value,
           education: educationOptions.value,
           birthday: date.value,
-          state: selectedState.value,
+          province: selectedState.value,
           city: selectedCity.value,
+          Address: selectedState.value + "،" + selectedCity.value,
         };
+
         if (props.nurseForm) {
           store.info = formData.value;
           localStorage.setItem("employmentPersonalInfo", JSON.stringify(formData.value));
           router.push("/employment/personal-records");
         } else {
+          submitPostingData();
           localStorage.setItem("academyPersonalInfo", JSON.stringify(formData.value));
-          openModal.value = true;
         }
       }
     };
+    //function for back button in form  and store data in local storage
     const routBackHandler = () => {
       if (props.nurseForm) {
         router.push("/home");
       } else {
-        const getPreRouteTitle = routeTitle.value.replace("/personal-info", "/details");
-        router.push(`/academy/${props.routeKeyword}${getPreRouteTitle}`);
+        localStorage.setItem("academyPersonalInfo", JSON.stringify(formData.value));
+        router.push(`/academy/${props.routeKeyword}${getPreRouteTitle.value}`);
       }
     };
-    onMounted(() => {
+    //check if local storage have item for each form modes
+    const getItemsFromLocalStorage = () => {
       if (props.nurseForm && localStorage.getItem("employmentPersonalInfo")) {
         formData.value = JSON.parse(localStorage.getItem("employmentPersonalInfo"));
-        educationOptions.value = formData.value.education;
-        date.value = formData.value.birthday;
-        selectedState.value = formData.value.state;
-        selectedCity.value = formData.value.city;
+      } else if (!props.nurseForm && localStorage.getItem("academyPersonalInfo")) {
+        formData.value = JSON.parse(localStorage.getItem("academyPersonalInfo"));
       } else {
         formData.value = {};
         educationSelect.value = 4;
+      }
+      educationOptions.value = formData.value.education;
+      date.value = formData.value.birthday;
+      selectedState.value = formData.value.province;
+      selectedCity.value = formData.value.city;
+    };
+    onMounted(() => {
+      getItemsFromLocalStorage();
+      //check if local storage does not have previous step information, redirect to previous steps in classes form mode
+      if (!props.nurseForm && !localItems.value) {
+        router.push(`/academy/${props.routeKeyword}${localKey.value}`);
       }
     });
     return {
       inputFields,
       educationOptions,
+      error,
+      loading,
       submit,
       rules,
       states,
@@ -353,6 +458,8 @@ export default {
       selectedState,
       selectedCity,
       date,
+      installmentPayment,
+      cashPayment,
       routBackHandler,
       formData,
       updateFormData,

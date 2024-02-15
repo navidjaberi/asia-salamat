@@ -1,13 +1,11 @@
 import vuetify from "vite-plugin-vuetify";
 import type { NuxtPage } from "nuxt/schema";
-import { useAuthentication } from "~/store/auth";
 // PWA Config
-const title = "AsiaSalamat";
-const shortTitle = "AsiaSalamat";
+const title = "Asia Salamat";
+const shortTitle = "Asia Salamat";
 const description = "Health App";
-const image = "https://vuetify3nuxt3starter.behonbaker.com/starter.png";
-const url = "https://vuetify3nuxt3starter.behonbaker.com/";
-
+const image = "~/assets/img/pics/mark.jpg";
+const url = "~/assets/img/pics/mark.jpg";
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   // import styles
@@ -22,10 +20,15 @@ export default defineNuxtConfig({
       baseURL: process.env.BASE_URL || "http://asiasalamat.ir",
     },
   },
+  loadingindicator: {
+    name: "./assets/index.html",
+    img: "./assets/img/pics/splash2.gif",
+  },
   modules: [
     "@kevinmarrec/nuxt-pwa",
     "@vee-validate/nuxt",
     "@sidebase/nuxt-pdf",
+    "@vite-pwa/nuxt",
     async (options, nuxt) => {
       nuxt.hooks.hook("vite:extendConfig", (config) => {
         config.plugins ||= [];
@@ -71,6 +74,10 @@ export default defineNuxtConfig({
           name: "description",
           content: description,
         },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1, maximum-scale=1",
+        },
         { property: "og:site_name", content: title },
         { hid: "og:type", property: "og:type", content: "website" },
         {
@@ -101,19 +108,35 @@ export default defineNuxtConfig({
       ],
     },
   },
-
   pwa: {
+    icon:
+
+    {
+      source: "./assets/img/icons/ic_launcher_monochrome.png",
+      fileName: "ic_launcher_monochrome.png",
+      sizes:[144, 152, 192],
+
+      purpose: 'maskable',
+      splash:{
+        backgroundColor:'white'
+      }
+        
+    },
     meta: {
       name: shortTitle,
-      author: "Behon Baker",
-      theme_color: "#4f46e5",
+      author: "Navid jaberi",
+      theme_color: "white",
       description: description,
+      mobileAppIOS: true,
+        
     },
+
     manifest: {
       name: shortTitle,
       short_name: shortTitle,
-      theme_color: "#4f46e5",
+      theme_color: "white",
       description: description,
+      background_color:'white'
     },
   },
 });

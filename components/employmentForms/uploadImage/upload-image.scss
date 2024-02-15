@@ -1,12 +1,16 @@
 .upload-image {
   .v-input {
     width: 190px !important;
-    height: 190px !important;
     margin: 0 auto;
     margin-top: 1rem;
   }
   .v-label {
-    font-size: 0.8rem;
+    font-size: 0.7rem!important;
+    font-family: "sans";
+  }
+
+  .v-input__control {
+    height: 21vh;
   }
   .v-field--appended {
     display: flex;
@@ -26,7 +30,7 @@
     display: none;
   }
   .v-field__input {
-    font-size: 0.7rem;
+    font-size: 0.5rem;
     margin-top: 0.5rem;
     color: #00bfa5;
     text-align: center;

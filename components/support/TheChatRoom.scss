@@ -3,8 +3,17 @@
     display: flex;
     justify-content: center;
   }
+  .support {
+    .v-badge__badge {
+      bottom: calc(100% - 17px) !important;
+      left: calc(100% - -21px) !important;
+    }
+  }
   .btn-animation {
     animation: moveUpDown 4s infinite;
+    position: absolute;
+    bottom: 12rem;
+    z-index: 903;
   }
   @keyframes moveUpDown {
     0% {
@@ -32,7 +41,6 @@
       transform: translateY(0);
     }
   }
-
   .v-overlay__content {
     position: unset !important;
   }
@@ -53,7 +61,7 @@
     align-items: center;
   }
   .v-field__input {
-    font-size: 0.8rem !important;
+    font-size: 0.6rem !important;
   }
   .type-box {
     position: fixed;
@@ -76,15 +84,14 @@
     border-radius: 10px 10px 0px 0px;
     width: 97%;
     left: 50%;
-
     transform: translate(-50%, 50%);
   }
   .msg-field {
     position: fixed;
-    bottom: -27px;
+    bottom: -50px;
     right: 50%;
     transform: translate(50%, -50%);
-    width: 99%;
+    width: 107%;
   }
   .image-input {
     .v-field__input,
