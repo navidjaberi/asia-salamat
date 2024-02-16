@@ -1,0 +1,1 @@
+import{di as o,dg as a}from"./entry.26e0f55e.js";import{u as r}from"./auth.d560fba5.js";import"./cookie.8aa2c3a6.js";const u=o((t,e)=>{if(!r().accessTokenGet&&t.path!=="/"&&e.path!=="/")return a("/")});export{u as default};

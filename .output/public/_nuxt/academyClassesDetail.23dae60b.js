@@ -1,0 +1,1 @@
+import{q as n,u,r as i,h as d}from"./entry.26e0f55e.js";const f=n("academyClassesDetail",()=>{const a=u(),e=i({}),t=d(()=>e.value);return{getAcademyClassesDetail:async(l,c)=>{const s=localStorage.getItem("classes");if(s){const o=JSON.parse(s).find(r=>r.route===l);e.value=o}else a.push(`/academy/${c}`)},classesDetailData:t}});export{f as u};

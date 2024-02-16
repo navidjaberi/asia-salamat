@@ -1,0 +1,1 @@
+import{_ as t,c as a,w as e,s,o as c,a as n,b as o,d as r}from"./entry.26e0f55e.js";const l={},_=r("h2",null,"لطفا منتظر باشید",-1);function d(f,i,p,u,x,h){return c(),a(s,{class:"d-flex justify-center align-center text-center p-5 h-screen"},{default:e(()=>[n(o,null,{default:e(()=>[_]),_:1})]),_:1})}const $=t(l,[["render",d]]);export{$ as default};

@@ -1,0 +1,1 @@
+function o(e){var n="۰".charCodeAt(0);return e=e.toString().replace(/[۰-۹]/g,function(r){return r.charCodeAt(0)-n}),n="٠".charCodeAt(0),e=e.replace(/[٠-٩]/g,function(r){return r.charCodeAt(0)-n}),e}export{o as u};

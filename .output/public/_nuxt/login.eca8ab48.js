@@ -1,0 +1,2 @@
+import{_ as a,k as r,a as e,w as t,o as n,b2 as s}from"./entry.26e0f55e.js";import{V as l,b as p,c as i}from"./VApp.dbfd8bb3.js";import"./index.4548580c.js";import"./VImg.e043ba4f.js";import"./index.7aba734a.js";const c={};function d(o,f,u,_,m,h){return n(),r("div",null,[e(l,null,{default:t(()=>[e(p,{color:`grey-lighten-5
+`,height:50,elevation:"1"}),e(i,null,{default:t(()=>[s(o.$slots,"default")]),_:3})]),_:3})])}const B=a(c,[["render",d]]);export{B as default};
